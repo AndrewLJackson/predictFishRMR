@@ -50,3 +50,6 @@ rsconnect/
 
 # OSX files
 .DS_Store
+
+# Ignore for now the big *.nc files which i think are maps
+*.nc

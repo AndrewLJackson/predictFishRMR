@@ -1,15 +1,30 @@
 ---
 title: "Estimate viable body temperatures for a given ambient water temperature"
-output: html_notebook
+author: "Andrew L Jackson"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estimate viable body temperatures for a given ambient water temperature}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{lamW}
+  %\VignetteDepends{tidyverse}
+  %\VignetteDepends{patchwork}
+  \usepackage[utf8]{inputenc}
 ---
 
 
 ## Setup
 
 ```{r}
+library(predictFishRMR)
 
-library(tidyverse)
+# required for access to the Lambert function
 library(lamW)
+
+# for plotting and tibble manipulation
+library(tidyverse)
+
+# for multi panel figures
 library(patchwork)
 
 ```
@@ -68,7 +83,7 @@ where:
 
 The symobolic solver available at [wolfram](https://www.wolframalpha.com/input?i2d=true&i=solve+for+B%5C%2844%29+A+%3D+B+-+%5C%2840%29Divide%5BPower%5B10%2C%5C%2840%29α*Log10%5Bm%5D%2Bβ*B%2Bγ%2Bω%5C%2841%29%5D%2Cm*Power%5B10%2Cψ%5D*k%5D%5C%2841%29++) yields the following solution where we introduce $B = T_m$ and $A = T_a$ for clarity for the solver.
 
-```solve for B, A = B - (Divide[Power[10,\(40)α*Log10[m]+β*B+γ+ψ\(41)],m*Power[10,ω]*k])```
+`solve for B, A = B - (Divide[Power[10,\(40)α*Log10[m]+β*B+γ+ψ\(41)],m*Power[10,ω]*k])`
 
 
 $$T_m = T_a - \frac{W_n(-\frac{10^{(\beta T_a + \gamma + \psi - \omega)}(m^{\alpha - 1})\beta \log(10)}{k})}{\beta\log (10)} $$
@@ -87,128 +102,7 @@ Define the parameters of the model taken from the PGLS regression model.
 pars <- c(0.8161589, 0.0505157, 0.8700325, 0.8358592, 5.945)
 ```
 
-Define some helper functions to calculate RMR, T0, k and ultimate Ta from Tb which is the "backwards" approach. 
 
-```{r}
-
-# ------------------------------------------------------------------------------
-# apply our already fitted linear model of how RMR scales
-# with temperature, mass and physiology.
-# ------------------------------------------------------------------------------
-RMRfun <- function(m, Tm, meso, pars) {
-  # calculates RMR over a range of body temperature values Tm for a 
-  # fish of mass m, meso = T or F as a logical toggle for whether to 
-  # indicate a regional endotherm (T) or an ectotherm (F), and parameters
-  # of the corresponding linear model.
-  
-  # determines the coefficints for 
-  ifelse(meso, b_meso <- pars[4],  b_meso <- 0)
-
-  
-  RMR <- 10 ^ (pars[1]*log10(m) + pars[2]*Tm + pars[3] + b_meso)
-  
-  return(RMR)
-  
-  
-}
-
-
-# ------------------------------------------------------------------------------
-# estimate metabolic heat production T0 using our linear model
-# ------------------------------------------------------------------------------
-T0fun <- function(m, Tm, meso, pars){
-  # calculates the rate of heat generation T0 
-  # over a range of body temperature values Tm for a 
-  # fish of mass m, meso = T or F as a logical toggle for whether to 
-  # indicate a regional endotherm (T) or an ectotherm (F), and parameters
-  # of the corresponding linear model.
-  
-  return(RMRfun(m, Tm,meso = meso, pars = pars) / (m*10^pars[5]))
-  
-}
-
-# ------------------------------------------------------------------------------
-## Estimate k from Nakamura scaling
-# ------------------------------------------------------------------------------
-kfun <- function(m, a = 0.00161, b = -0.62){
-  # Uses the reported allometric scaling of rate of cooling 
-  # with body mass. Defaults to Nakamura values. 
-  return( a * m^(b) )
-}
-  
-# ------------------------------------------------------------------------------
-## calculate DeltaT = (Tm - Ta)
-# ------------------------------------------------------------------------------
-Tafun <- function(m, Tm, meso, pars){
-  # calculates the ambient water temperature associated with heat balance
-  # over a range of body temperature values Tm for a 
-  # fish of mass m, meso = T or F as a logical toggle for whether to 
-  # indicate a regional endotherm (T) or an ectotherm (F), and parameters
-  # of the corresponding linear model.
-  return(Tm - T0fun(m, Tm, meso = meso, pars = pars) / kfun(m))
-  
-}
-
-
-# ------------------------------------------------------------------------------
-# Solve the model for body temperature as a function of ambient water temp
-# ------------------------------------------------------------------------------
-bodyTempLambert <- function(x, m, meso, pars){
-  
-  # calculate the cooling rate k from allometric relationship with mass
-  kk <- kfun(m)
-  
-  # extract the parameters to pass onwards
-  aa <- pars[1] # alpha, the coefficient of log10(mass) in RMR
-  bb <- pars[2] # beta, the coefficient of body temperature
-  gg <- pars[3] # gamma, the intercept
-  ifelse(meso, pp <- pars[4],  pp <- 0) # psi, the effect of mesothermy
-  om <- pars[5] # omega, the exponent of the multiplier of mass to convert RMR to T0
-  
-  # evaluate the two arms of the Lambert function that gives Real solutions
-  y0 <- x - 
-    (lambertW0( - ((10^(bb*x+gg+pp-om)) * (m^(aa-1)) * bb * log(10)) / kk )) / (bb* log(10))
-  y1 <- x - 
-    (lambertWm1(- ((10^(bb*x+gg+pp-om)) * (m^(aa-1)) * bb * log(10)) / kk )) / (bb* log(10))
-  
-  
-  # lmbd <- gg + pp -om
-  
-  # x_crit <- (0.43429 * (log((0.43429 * kk * m^(1 - aa)) / (bb)) - 
-  #                         (2.3026 * (gg + pp -om)) - 1 )) / bb
-  # 
-  # return the data
-  return(data.frame(x = c(x, NA, x), y = c(y0, NA, y1), 
-                    branch = c(rep(0, length(y0)), NA,rep(-1, length(y1)))))
-}
-
-# ------------------------------------------------------------------------------
-# Calculate the maximum value of water temperature that yields real numbers
-# ------------------------------------------------------------------------------
-maxAmbientTemp <- function(m, meso, pars){
-  
-  # calculate the cooling rate k from allometric relationship with mass
-  kk <- kfun(m)
-  
-  # extract the parameters to pass onwards
-  aa <- pars[1] # alpha, the coefficient of log10(mass) in RMR
-  bb <- pars[2] # beta, the coefficient of body temperature
-  gg <- pars[3] # gamma, the intercept
-  ifelse(meso, pp <- pars[4],  pp <- 0) # psi, the effect of mesothermy
-  om <- pars[5] # omega, the exponent of the multiplier of mass to convert RMR to T0
-  
-  # this approximation involves complex numbers owing to the branching of the 
-  # Lambert function, but only the real component is meaningful for the two 
-  # branches that concern us.
-  x_max <- (0.434294481903252 * (log((0.434294481903252 * kk * m^(1 - aa)) / (bb)) - 
-                          (2.30258509299405 * (gg + pp -om)) - 1 )) / bb
-  
-  return(x_max)
-  
-}
-
-
-```
 
 ## Test some values
 
