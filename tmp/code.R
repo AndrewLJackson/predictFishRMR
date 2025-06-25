@@ -10,7 +10,7 @@
 
 
 # --- libraries
-library(phytools) # pylogenetic analysis
+library(phytools) # phylogenetic analysis
 library(nlme) # pgls analysis
 library(geiger)
 library(plyr) # organise dataset
