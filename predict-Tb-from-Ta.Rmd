@@ -1,0 +1,337 @@
+---
+title: "Estimate viable body temperatures for a given ambient water temperature"
+output: html_notebook
+---
+
+
+## Setup
+
+```{r}
+
+library(tidyverse)
+library(lamW)
+library(patchwork)
+
+```
+
+## Introduction
+
+Here we introduce a model that estimates the body muscle temperature of a fish that balances their heat budget in water of a specified temperature. This model relies on empirical relationships to predict routine metabolic rate (RMR) from body temperature alongside empirically derived estimates of the heat transfer coefficient to predict the equilibria states of a dynamic heat budget model. Specifically the dynamic model we fit is the standard dynamic heat balance model which relates muscle temperature ($T_m$) as a proxy for body temperature to ambient water temperature $T_a$ with parameters $k$ the heat transfer coefficient of the whole body and $\dot{T}_0$ the heat production rate according to metabolism.
+
+$$\frac{dT_m}{dt} = k(T_a(t) - T_m(t)) + \dot{T}_0$$
+which at equilibrium is 
+
+$$T_m = T_a + \frac{\dot{T}_0}{k} $$
+The goal in what follows is to estimate $\dot{T}_0$ and $k$ using empirically derived relationships with body mass, such that predictions can be made for fish of different body mass with different physiologies (ectothermy and mesothermy / regional endothermy) about what their metabolic rates would be in water of different temperature assuming they balance their energy budgets. The challenge is that the equation immediately above hides the fact that $\dot{T}_0 = f(T_m)$ and results in a somewhat complicated solution. 
+
+## Define mathematical functions
+
+The following function is based on the regression of $\log_{10}(RMR)$ against $\log_{10}(mass)$ with slope $\alpha$, body temperature with slope $B$, the additive effect of endothermy $\phi$ and the intercept $\gamma$.This equation is used to esimated $\dot{T}_0$.
+
+Note that ideally I think we would parameterise this in natural logs rather than base 10, which would simplify somewhat the subsequent equations.
+
+Just for noting, the following three equations are equivalent. 
+
+$$\log_{10}(RMR) = \alpha\log_{10}(m) + \beta T_m + \gamma + \phi$$
+
+$$RMR = 10^{(\alpha\log_{10}(m) + \beta T_m + \gamma + \phi)}$$
+$$RMR = m^\alpha10^{\beta T_m}10^{\gamma}10^{\phi}$$
+
+Heat production via metabolism is then calculated as
+
+$$\dot{T}_0 = \frac{RMR}{M*10^{\omega}}$$
+where $\omega = 5.945$ (CHECK REFERENCE).
+
+The difference in temperature between the fish ($T_m$ for body) and the ambient water ($T_a$ for ambient) is then given by 
+
+$$T_m - T_a = \frac{\dot{T}_0}{k}$$
+
+The goal is to estimate the body temperature of a fish $T_m$ in a body of water at a given temperature such that it balances its heat budget. But the difficulty is that $T0$ is itself a function of $T_m$. So we take two approaches. First we take an empirical approach and instead solve for $A$ given a range of body temperatures and invert the axes to yield the relationship between body temperature and ambient water temperature. Second we make use of the Product Log function (Lambert function) to estimate directly the solution in terms of B.
+
+
+The predicted water temperature as function of body mass is then given as body temperature minus the temperature difference $\Delta T$ which is given by $RMR/k$ where $k$ is the rate of heat loss.
+
+
+$$T_a = T_m - \frac{10^{(\alpha\log_{10}(m) + \beta T_m + \gamma + \psi)}}{m*10^w*k}$$
+where:
+
+- $T_a$ is ambient water temperature
+- $T_m$ is muscle (body) temperature
+- $\alpha$ is the coefficient of log10(mass)
+- $\beta$ is the coefficient of body temperature 
+- $\gamma$ is the intercept
+- $\psi$ is the effect of mesothermy
+- $\omega$ is the scaling of the coefficient of mass that converts $RMR$ to $\dot{T}_0$
+- $k$ is the rate of heat transfer and is estimated via $k = 0.00161 * m^{-0.62}$
+
+
+
+The symobolic solver available at [wolfram](https://www.wolframalpha.com/input?i2d=true&i=solve+for+B%5C%2844%29+A+%3D+B+-+%5C%2840%29Divide%5BPower%5B10%2C%5C%2840%29α*Log10%5Bm%5D%2Bβ*B%2Bγ%2Bω%5C%2841%29%5D%2Cm*Power%5B10%2Cψ%5D*k%5D%5C%2841%29++) yields the following solution where we introduce $B = T_m$ and $A = T_a$ for clarity for the solver.
+
+```solve for B, A = B - (Divide[Power[10,\(40)α*Log10[m]+β*B+γ+ψ\(41)],m*Power[10,ω]*k])```
+
+
+$$T_m = T_a - \frac{W_n(-\frac{10^{(\beta T_a + \gamma + \psi - \omega)}(m^{\alpha - 1})\beta \log(10)}{k})}{\beta\log (10)} $$
+
+## Define parameters and functions for this model
+
+Define the parameters of the model taken from the PGLS regression model. 
+
+```{r}
+# order of the parameters is:
+# 1 = alpha the coefficient of log10(mass)
+# 2 = beta the coefficient of Body temperature
+# 3 = Intercept (gamma)
+# 4 = the effect of mesothermy (psi)
+# 5 = omega, the exponent of the multiplier of mass for converting RMR to T0
+pars <- c(0.8161589, 0.0505157, 0.8700325, 0.8358592, 5.945)
+```
+
+Define some helper functions to calculate RMR, T0, k and ultimate Ta from Tb which is the "backwards" approach. 
+
+```{r}
+
+# ------------------------------------------------------------------------------
+# apply our already fitted linear model of how RMR scales
+# with temperature, mass and physiology.
+# ------------------------------------------------------------------------------
+RMRfun <- function(m, Tm, meso, pars) {
+  # calculates RMR over a range of body temperature values Tm for a 
+  # fish of mass m, meso = T or F as a logical toggle for whether to 
+  # indicate a regional endotherm (T) or an ectotherm (F), and parameters
+  # of the corresponding linear model.
+  
+  # determines the coefficints for 
+  ifelse(meso, b_meso <- pars[4],  b_meso <- 0)
+
+  
+  RMR <- 10 ^ (pars[1]*log10(m) + pars[2]*Tm + pars[3] + b_meso)
+  
+  return(RMR)
+  
+  
+}
+
+
+# ------------------------------------------------------------------------------
+# estimate metabolic heat production T0 using our linear model
+# ------------------------------------------------------------------------------
+T0fun <- function(m, Tm, meso, pars){
+  # calculates the rate of heat generation T0 
+  # over a range of body temperature values Tm for a 
+  # fish of mass m, meso = T or F as a logical toggle for whether to 
+  # indicate a regional endotherm (T) or an ectotherm (F), and parameters
+  # of the corresponding linear model.
+  
+  return(RMRfun(m, Tm,meso = meso, pars = pars) / (m*10^pars[5]))
+  
+}
+
+# ------------------------------------------------------------------------------
+## Estimate k from Nakamura scaling
+# ------------------------------------------------------------------------------
+kfun <- function(m, a = 0.00161, b = -0.62){
+  # Uses the reported allometric scaling of rate of cooling 
+  # with body mass. Defaults to Nakamura values. 
+  return( a * m^(b) )
+}
+  
+# ------------------------------------------------------------------------------
+## calculate DeltaT = (Tm - Ta)
+# ------------------------------------------------------------------------------
+Tafun <- function(m, Tm, meso, pars){
+  # calculates the ambient water temperature associated with heat balance
+  # over a range of body temperature values Tm for a 
+  # fish of mass m, meso = T or F as a logical toggle for whether to 
+  # indicate a regional endotherm (T) or an ectotherm (F), and parameters
+  # of the corresponding linear model.
+  return(Tm - T0fun(m, Tm, meso = meso, pars = pars) / kfun(m))
+  
+}
+
+
+# ------------------------------------------------------------------------------
+# Solve the model for body temperature as a function of ambient water temp
+# ------------------------------------------------------------------------------
+bodyTempLambert <- function(x, m, meso, pars){
+  
+  # calculate the cooling rate k from allometric relationship with mass
+  kk <- kfun(m)
+  
+  # extract the parameters to pass onwards
+  aa <- pars[1] # alpha, the coefficient of log10(mass) in RMR
+  bb <- pars[2] # beta, the coefficient of body temperature
+  gg <- pars[3] # gamma, the intercept
+  ifelse(meso, pp <- pars[4],  pp <- 0) # psi, the effect of mesothermy
+  om <- pars[5] # omega, the exponent of the multiplier of mass to convert RMR to T0
+  
+  # evaluate the two arms of the Lambert function that gives Real solutions
+  y0 <- x - 
+    (lambertW0( - ((10^(bb*x+gg+pp-om)) * (m^(aa-1)) * bb * log(10)) / kk )) / (bb* log(10))
+  y1 <- x - 
+    (lambertWm1(- ((10^(bb*x+gg+pp-om)) * (m^(aa-1)) * bb * log(10)) / kk )) / (bb* log(10))
+  
+  
+  # lmbd <- gg + pp -om
+  
+  # x_crit <- (0.43429 * (log((0.43429 * kk * m^(1 - aa)) / (bb)) - 
+  #                         (2.3026 * (gg + pp -om)) - 1 )) / bb
+  # 
+  # return the data
+  return(data.frame(x = c(x, NA, x), y = c(y0, NA, y1), 
+                    branch = c(rep(0, length(y0)), NA,rep(-1, length(y1)))))
+}
+
+# ------------------------------------------------------------------------------
+# Calculate the maximum value of water temperature that yields real numbers
+# ------------------------------------------------------------------------------
+maxAmbientTemp <- function(m, meso, pars){
+  
+  # calculate the cooling rate k from allometric relationship with mass
+  kk <- kfun(m)
+  
+  # extract the parameters to pass onwards
+  aa <- pars[1] # alpha, the coefficient of log10(mass) in RMR
+  bb <- pars[2] # beta, the coefficient of body temperature
+  gg <- pars[3] # gamma, the intercept
+  ifelse(meso, pp <- pars[4],  pp <- 0) # psi, the effect of mesothermy
+  om <- pars[5] # omega, the exponent of the multiplier of mass to convert RMR to T0
+  
+  # this approximation involves complex numbers owing to the branching of the 
+  # Lambert function, but only the real component is meaningful for the two 
+  # branches that concern us.
+  x_max <- (0.434294481903252 * (log((0.434294481903252 * kk * m^(1 - aa)) / (bb)) - 
+                          (2.30258509299405 * (gg + pp -om)) - 1 )) / bb
+  
+  return(x_max)
+  
+}
+
+
+```
+
+## Test some values
+
+We can start by generating a plot of Tb given Ta and use that as illusrative of the shape of the expected curve. 
+
+First we define the size of the fish. 
+
+```{r}
+# mass
+m = 300
+
+```
+
+
+```{r}
+
+# generate a sequence of plausible body temperature values Tm
+Tm_range = seq(0, 50, 0.25)
+
+## A meso - expected Ta and RMR
+Ta_est_meso   = Tafun(m, Tm_range, meso = TRUE, pars = pars)
+RMR_meso      = RMRfun(m, Tm_range, meso = TRUE, pars = pars) # not used
+
+
+## An ecto- expected Ta and RMR
+Ta_est_ecto   = Tafun(m, Tm_range, meso = FALSE, pars = pars)
+RMR_ecto      = RMRfun(m, Tm_range, meso = FALSE, pars = pars) # not used
+
+# Create the data.frame object 
+dd_meso = data.frame(Tm = Tm_range, Ta = Ta_est_meso)
+dd_ecto = data.frame(Tm = Tm_range, Ta = Ta_est_ecto)
+dd <- bind_rows(meso = dd_meso, ecto = dd_ecto, .id = "type")
+
+# plot the curve
+gg1 <- ggplot(data = dd, mapping = aes(x = Ta, y = Tm, color = type)) + 
+  geom_path() + 
+  scale_color_viridis_d(option = "D", begin = 0.2, end = 0.8)
+
+print(gg1)
+
+```
+**Figure X.** The relationship between $T_m$ and $T_a$ as derived by evaluating the inverse relationship.
+
+
+```{r}
+# create a reasonable ambient water temperature range to evaluate our solution on
+new_Ta_meso <- seq(-5, maxAmbientTemp(m, meso = TRUE, pars) - 0.000001, length.out = 300)
+new_Ta_ecto <- seq(-5, maxAmbientTemp(m, meso = FALSE, pars) - 0.000001, length.out = 300)
+
+# calculate the body temperature solutions for our range of water temperatures
+gen_Tb_meso <- bodyTempLambert(new_Ta_meso, m, meso = TRUE, pars = pars)
+gen_Tb_ecto <- bodyTempLambert(new_Ta_ecto, m, meso = FALSE, pars = pars)
+
+# create a dataframe that includes Ta for plotting
+lam_dd <- bind_rows(meso = gen_Tb_meso, 
+                    ecto = gen_Tb_ecto, 
+                    .id = "type") %>%
+  rename(Ta = x, Tb = y)
+
+```
+
+
+```{r}
+
+# Plot both arms of the Lambert function 
+gg_lam <- ggplot(data = lam_dd %>% mutate(branch = as.factor(branch)), 
+                 mapping = aes(x = Ta, y = Tb,
+                               group = type)) + 
+  geom_path(mapping = aes(color = branch)) + 
+  scale_color_viridis_d(option = "A", begin = 0.2, end = 0.8)
+
+print(gg_lam)
+
+
+```
+**Figure X.** The predicted $T_m$ as a function of $T_a$ for a `r m` Kg mesotherm (left hand curve) and ectotherm (right hand curve) with both branches arising from the Lambert function indicated by colour. Note that the NA factor for "branch" is an artifact of introducing a NA value between the two vectors of the branches so as to not join the the two curves. 
+
+
+Here we plot them side by side and adjust axes limits manually to make them comparable. 
+
+```{r}
+
+(gg1 + ylim(-5, 50) + xlim(-10, 50)| gg_lam + ylim(-5, 50) + xlim(-10, 50))
+
+```
+
+**Figure X.** A sanity check that plotting $T_a = f(T_m)$ (left panel) and the preferred direct method $T_m = g(T_a)$ yield (near, since there is some approximation in the direct method) identical solutions. 
+
+
+
+## Plot max values of Ta by body mass and meso/ecto
+
+The inflection point of the curve occurs in the Lambert function $W_n(x)$ when $x = -\frac{1}{e}$. We use this to derive the value of $Ta$ that satisfies this:
+
+x_max <- (0.43429 * (log((0.43429 * kk * m^(1 - aa)) / (bb)) - 
+                          (2.3026 * (gg + pp -om)) - 1 )) / bb
+                          
+
+$$T_a^* = \frac{0.43429(\log(\frac{0.43429 k m^{1-\alpha}}{\beta}) - (2.3026 * (\gamma + \psi - \omega)) - 1)}{\beta}$$
+
+```{r}
+
+m_range <- seq(100, 10000, length.out = 100)
+
+Ta_crit_meso <- maxAmbientTemp(m_range, meso = TRUE, pars)
+Ta_crit_ecto <- maxAmbientTemp(m_range, meso = FALSE, pars)
+
+dd_crit <- data.frame(mass = c(m_range, m_range), 
+                      Ta_crit = c(Ta_crit_meso, Ta_crit_ecto), 
+                      type = c(rep("meso", length(m_range)), 
+                               rep("ecto", length(m_range))))
+
+gg_crit <- ggplot(data = dd_crit, 
+                  mapping = aes(x = mass, y = Ta_crit, 
+                                color = type)) + 
+  geom_path() + 
+  scale_color_viridis_d(option = "D", begin = 0.2, end = 0.8)
+
+print(gg_crit)
+
+```
+
+**Figure X.** The predicted maximum water temperature in which a fish can maintain heat balance as a function of body mass and physiological type. Note that these are analytical approximations.
+
+
+
