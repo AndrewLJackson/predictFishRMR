@@ -1,7 +1,6 @@
 ---
 title: "Estimate viable body temperatures for a given ambient water temperature"
 author: "Andrew L Jackson"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Estimate viable body temperatures for a given ambient water temperature}
