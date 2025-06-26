@@ -9,9 +9,14 @@ Description: Observed relationships between body mass and cooling coefficients, 
 License: GPL (>= 2)
 RoxygenNote: 7.3.2
 Encoding: UTF-8
+Depends:
+    R (>= 3.5.0)
+LazyData: true
 VignetteBuilder: knitr
 Imports:
-    lamW
+    lamW,
+    nlme,
+    utils
 Suggests:
     tidyverse,
     patchwork,
