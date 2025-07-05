@@ -11,7 +11,9 @@
 #' @export
 #' 
 fitRegressionK <- 
-function(dd = utils::data("Kmass")){
+function(dd = NULL){
+  
+  if(is.null(dd)) {utils::data("Kmass"); dd <- Kmass}
   
   out <- nlme::lme(K ~ M, 
                    random = ~ 1 | species, 
