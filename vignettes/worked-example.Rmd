@@ -1,0 +1,48 @@
+---
+title: "A worked example"
+author: "Andrew L Jackson"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A worked example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{lamW}
+  %\VignetteDepends{tidyverse}
+  %\VignetteDepends{patchwork}
+  \usepackage[utf8]{inputenc}
+---
+
+
+## Setup
+
+```{r}
+library(predictFishRMR)
+
+# for plotting and tibble manipulation
+library(tidyverse)
+
+
+```
+
+## Introduction
+
+Here we use the functions in the pacakge `predictFishRMR` to predict various features of a fishe's metabolism and ecological constraints based on their mass and physiology type. 
+
+For this example we pick a fish with mass = 30kg.
+
+```{r}
+
+mm <- 30
+
+# Estimate the cooling coefficient K
+K <- kfun(m = mm)
+
+# Estimate routine metabolic rate RMR over the range of 
+# RMR <- RMRfun()
+
+
+
+```
+
+
+
+
