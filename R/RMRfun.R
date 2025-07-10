@@ -1,6 +1,6 @@
 #' Calculate RMR for a fish of given mass, body temperature and thermal strategy
 #'
-#' @param m body mass in g
+#' @param m body mass in g, typically provided as a vector but could be scalar.
 #' @param Tm body temperature in C
 #' @param meso a logical value where TRUE indicates mesotherm and FALSE indicates ectotherm
 #' @param pars a vector of length 4 containing the coefficients of the corresponding fitted linear regression
@@ -11,12 +11,13 @@
 RMRfun <-
 function(m, Tm, meso, pars) {
   
-  # determines the coefficients for 
+  # determines the coefficient associate with mesothermy or ectothermy
   ifelse(meso, b_meso <- pars[4],  b_meso <- 0)
 
-  
+  # calculate RMR based on the regression parameters
   RMR <- 10 ^ (pars[1]*log10(m) + pars[2]*Tm + pars[3] + b_meso)
   
+  # return output
   return(RMR)
   
   

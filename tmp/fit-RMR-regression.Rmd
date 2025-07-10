@@ -48,13 +48,20 @@ The RMR data needs some cleaning so that the species names agree with those in t
 rmr_data$spp <- gsub("_", " ", rmr_data$spp) #remove underscore
 
 # some corrections are needed
-rmr_data$spp[rmr_data$spp == "Scomberesocidae sp."] <- "Scomberesocidae" # correct this species
-rmr_data$spp[rmr_data$spp == "Ambassis sp"] <- "Ambassis sp." # correct this species
-rmr_data$spp[rmr_data$spp == "Hypoatherina sp"] <- "Hypoatherina sp." # correct this species
-rmr_data$spp[rmr_data$spp == "Monacanthidae sp"] <- "Monacanthidae" # correct this species
-rmr_data$spp[rmr_data$spp == "Monacanthidae sp."] <- "Monacanthidae" # correct this species
-rmr_data$spp[rmr_data$spp == "Carcharodon carcharius"] <- "Carcharodon carcharias" # correct this species
-rmr_data$spp[rmr_data$spp == "Stegostoma tigrinum"] <- "Stegostoma fasciatum"
+rmr_data$spp[rmr_data$spp == "Scomberesocidae sp."] <- 
+  "Scomberesocidae" # correct this species
+rmr_data$spp[rmr_data$spp == "Ambassis sp"] <- 
+  "Ambassis sp." # correct this species
+rmr_data$spp[rmr_data$spp == "Hypoatherina sp"] <- 
+  "Hypoatherina sp." # correct this species
+rmr_data$spp[rmr_data$spp == "Monacanthidae sp"] <- 
+  "Monacanthidae" # correct this species
+rmr_data$spp[rmr_data$spp == "Monacanthidae sp."] <- 
+  "Monacanthidae" # correct this species
+rmr_data$spp[rmr_data$spp == "Carcharodon carcharius"] <- 
+  "Carcharodon carcharias" # correct this species
+rmr_data$spp[rmr_data$spp == "Stegostoma tigrinum"] <- 
+  "Stegostoma fasciatum"
 rmr_data <- subset(rmr_data, spp != "Caulophrynidae sp.") # this family is not included in the phylo tree
 rmr_data <- rmr_data[order(rmr_data$spp),]
 ```
@@ -79,8 +86,10 @@ Process the species names data.
 sp_names$spp <- gsub("_", " ", sp_names$spp) #remove underscore
 sp_names$original.name <- gsub("_", " ", sp_names$original.name) #remove underscore
 sp_names$sp_all <- gsub("_", " ", sp_names$sp_all) #remove underscore
-sp_names$original.name[sp_names$original.name == "Carcharodon carcharius"]<- "Carcharodon carcharias" # correct this species
-sp_names$original.name[sp_names$original.name == "Stegostoma tigrinum"]<- "Stegostoma fasciatum" # correct this species
+sp_names$original.name[sp_names$original.name == "Carcharodon carcharius"] <- 
+  "Carcharodon carcharias" # correct this species
+sp_names$original.name[sp_names$original.name == "Stegostoma tigrinum"] <- 
+  "Stegostoma fasciatum" # correct this species
 ```
 
 ### Phylogenetic tree dataset
@@ -100,8 +109,11 @@ Process the tree tips for matching.
 ```{r}
 tree$tip.label <- gsub("_", " ", tree$tip.label) #remove underscore
 tree$tip.label <- gsub("-", ",", tree$tip.label) #remove underscore
-tree$tip.label[tree$tip.label == "Pseudocaranx dentex ,formaly Longirostrum delicatissimus"] <- "Pseudocaranx dentex (formaly Longirostrum delicatissimus) "
-tree$tip.label[tree$tip.label == "Sardinops sagax ,formaly S. caerulea"] <- "Sardinops sagax (formaly S. caerulea)"
+tree$tip.label[tree$tip.label == 
+                 "Pseudocaranx dentex ,formaly Longirostrum delicatissimus"] <- 
+  "Pseudocaranx dentex (formaly Longirostrum delicatissimus) "
+tree$tip.label[tree$tip.label == "Sardinops sagax ,formaly S. caerulea"] <- 
+  "Sardinops sagax (formaly S. caerulea)"
 ```
 
 ### Other data processing
@@ -119,14 +131,14 @@ setdiff(rmr_data$spp, sp_names$original.name)
 
 # --- housekeeping
 rmr_data$method <- factor(rmr_data$method)
-rmr_data$ram <- factor(rmr_data$ram)
-rmr_data$therm <- factor(rmr_data$therm)
-rmr_data <- rmr_data[complete.cases(rmr_data),]
+rmr_data$ram    <- factor(rmr_data$ram)
+rmr_data$therm  <- factor(rmr_data$therm)
+rmr_data        <- rmr_data[complete.cases(rmr_data),]
 ```
 
 ## Bayesian Linear Mixed / Phylogenetic Model
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 # construct covariance matrix of species (Hadfield & Nakagawa, 2010).
 A <- ape::vcv.phylo(compute.brlen(tree,method="Grafen"))
 
@@ -160,7 +172,7 @@ priors =c(
 
 Fit the model 
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 
 
 # run Bayesian model including phylogenetic tree
@@ -184,7 +196,7 @@ mod <- brm((logRMR)  ~ logM + T + therm # fixed coefficients
 
 Check model convergence.
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 # check model convergence 
 plot(mod)
 pp_check(mod)
@@ -196,14 +208,15 @@ posterior_samples <- posterior_samples(mod)
 summary(mod) 
 
 # get bayesian p-value
-p_map(mod)
+# p_map(mod)
 
 ```
 
-Plot the fitted model 
+Save the fitted model
 
 ```{r}
-
+save(mod, file = "fittedModelRMR.rda", 
+     compress = "xz")
 ```
 
 

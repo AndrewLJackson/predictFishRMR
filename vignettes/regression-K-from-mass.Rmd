@@ -1,0 +1,56 @@
+---
+title: "Regression of K on Mass"
+author: "Andrew L Jackson"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Regression of K on Mass}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{nlme}
+  %\VignetteDepends{ggeffects}
+  %\VignetteDepends{tidyverse}
+  \usepackage[utf8]{inputenc}
+---
+
+
+## Setup
+
+```{r}
+library(predictFishRMR)
+
+# for plotting and tibble manipulation
+library(tidyverse)
+
+```
+
+## Introduction
+
+Fit a random effects linear regression model of cooling coefficient $K$ against mass with species as a random effect on the intercept.
+
+```{r}
+# make available the Kmass dataframe object
+utils::data("Kmass")
+
+# Fit the random effects regression
+kmod <- fitRegressionK(dd = Kmass)
+
+# Use the package ggeffects to calculate the full confidence interval including
+# both residual and species level variance.
+kpred <- ggeffects::ggpredict(kmod, "M") 
+
+# plot the data and the fitted model with th e95% Confidence Intervals
+g1 <- ggplot(kpred, aes(x, predicted)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = 0.1) + 
+  xlab("M") + 
+  ylab("K") + theme_classic()
+
+# print figure to screen
+print(g1)
+
+
+
+```
+
+
+
+

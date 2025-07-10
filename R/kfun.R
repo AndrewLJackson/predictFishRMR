@@ -9,9 +9,9 @@
 #'
 #' @examples
 #' kfun(1000)
-#' kfun(m = c(1, 10, 100, 1000), a = 0.00161, b = -0.62)
+#' kfun(m = c(1, 10, 100, 1000), a = 0.0018, b = -0.63)
 kfun <-
-function(m, a = 0.00161, b = -0.62){
+function(m, a = 0.0018, b = -0.63){
   # Uses the reported allometric scaling of rate of cooling 
   # with body mass. Defaults to Nakamura values. 
   return( a * m^(b) )
