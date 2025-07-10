@@ -15,3 +15,18 @@
 #' @author Andrew Jackson
 "Kmass"
 
+
+#' Fitted RMR model.
+#'
+#' 
+#'
+#' @docType data
+#'
+#' @usage data(fittedModelRMR)
+#'
+#' @format An object of class `"brmsfit"`. 
+#'
+#' @keywords datasets
+#' @author Andrew Jackson
+"fittedModelRMR"
+
