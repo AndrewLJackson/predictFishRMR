@@ -9,6 +9,7 @@ vignette: >
   %\VignetteDepends{rstan}
   %\VignetteDepends{brms}
   %\VignetteDepends{ape}
+  %\VignetteDepends{parallel}
   \usepackage[utf8]{inputenc}
 ---
 
