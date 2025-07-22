@@ -2,6 +2,8 @@
 #'
 #' @param x ambient water temperature in C
 #' @param m body mass in g
+#' @param k cooling coefficient k. Defaults to NULL which causes it to be
+#'   estimated from m via allometric scaling kfun()
 #' @param meso a switch parameter that is either TRUE for mesotherm (or regional
 #'   endotherm) or FALSE for ectotherm
 #' @param pars the coefficients of the fitted regression model
@@ -10,10 +12,11 @@
 #' @export
 #'
 bodyTempLambert <-
-function(x, m, meso, pars){
+function(x, m, k = NULL,meso, pars){
   
-  # calculate the cooling rate k from allometric relationship with mass
-  kk <- kfun(m)
+  # calculate the cooling rate k from allometric relationship with mass if not
+  # provided
+  kk <- ifelse(is.null(k), kk <- kfun(m), k)
   
   # extract the parameters to pass onwards
   aa <- pars[1] # alpha, the coefficient of log10(mass) in RMR
