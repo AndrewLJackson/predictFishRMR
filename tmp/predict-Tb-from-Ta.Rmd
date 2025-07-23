@@ -98,14 +98,15 @@ Define the parameters of the model taken from the PGLS regression model.
 # 3 = Intercept (gamma)
 # 4 = the effect of mesothermy (psi)
 # 5 = omega, the exponent of the multiplier of mass for converting RMR to T0
-pars <- c(0.8161589, 0.0505157, 0.8700325, 0.8358592, 5.945)
+# pars <- c(0.8161589, 0.0505157, 0.8700325, 0.8358592, 5.945)
+pars <- c(0.8700325, 0.8161589, 0.0505157 , 0.8358592, 5.945)
 ```
 
 
 
 ## Test some values
 
-We can start by generating a plot of Tb given Ta and use that as illusrative of the shape of the expected curve. 
+We can start by generating a plot of Tb given Ta and use that as illustrative of the shape of the expected curve. 
 
 First we define the size of the fish. 
 

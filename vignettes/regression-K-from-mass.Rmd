@@ -38,7 +38,9 @@ kmod <- fitRegressionK(dd = Kmass)
 kpred <- ggeffects::ggpredict(kmod, "M") 
 
 # plot the data and the fitted model with th e95% Confidence Intervals
-g1 <- ggplot(kpred, aes(x, predicted)) +
+g1 <- ggplot(kpred, aes(x, predicted)) + 
+  geom_point(data = Kmass, 
+             mapping = aes(x = M, y = K)) + 
   geom_line() +
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = 0.1) + 
   xlab("M") + 
@@ -50,6 +52,7 @@ print(g1)
 
 
 ```
+**Figure X.** The relationship between cooling coefficient log10(K) and body mass log10(Mass). 
 
 
 

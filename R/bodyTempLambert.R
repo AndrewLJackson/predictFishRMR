@@ -19,11 +19,18 @@ function(x, m, k = NULL,meso, pars){
   kk <- ifelse(is.null(k), kk <- kfun(m), k)
   
   # extract the parameters to pass onwards
-  aa <- pars[1] # alpha, the coefficient of log10(mass) in RMR
-  bb <- pars[2] # beta, the coefficient of body temperature
-  gg <- pars[3] # gamma, the intercept
+  gg <- pars[1] # gamma, the intercept
+  aa <- pars[2] # alpha, the coefficient of log10(mass) in RMR
+  bb <- pars[3] # beta, the coefficient of body temperature
   ifelse(meso, pp <- pars[4],  pp <- 0) # psi, the effect of mesothermy
-  om <- pars[5] # omega, the exponent of the multiplier of mass to convert RMR to T0
+  # om <- pars[5] # omega, the exponent of the multiplier of mass to convert RMR to T0
+  om <- omega
+  # aa <- pars[1] # alpha, the coefficient of log10(mass) in RMR
+  # bb <- pars[2] # beta, the coefficient of body temperature
+  # gg <- pars[3] # gamma, the intercept
+  # ifelse(meso, pp <- pars[4],  pp <- 0) # psi, the effect of mesothermy
+  # om <- pars[5] # omega, the exponent of the multiplier of mass to convert RMR to T0
+  # # om <- omega
   
   # evaluate the two arms of the Lambert function that gives Real solutions
   y0 <- x - 

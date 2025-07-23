@@ -34,8 +34,8 @@ For this example we pick a fish with mass = 3000g.
 # mass of fish
 mm <- 3000
 
-# water temperature in C
-Ta <- 13
+# range of water temperatures in C
+Ta <- 10
 
 # mesotherm (meso = T) or ecotherm (meso = F)?
 mesotherm <- TRUE
@@ -43,17 +43,19 @@ mesotherm <- TRUE
 # Estimate the cooling coefficient K
 K <- kfun(m = mm)
 
+# load the fitted regression model and extract the parameters
+data("fittedModelRMR")
+pars <- brms::fixef(fittedModelRMR)[,1]
+
 # Estimate the body temperature at thermal equilibrium
+Tm <- bodyTempLambert(Ta, m = mm, k = K, meso = mesotherm, pars = pars)
 
-Tm <- bodyTempLambert(Ta, m = mm, k = K, meso = mesotherm)
-
-# Estimate routine metabolic rate RMR over the range of 
-# AJ - NEED TO HAVE pars OBJECT FROM VIGNETTE "fit-RMR-regression.Rmd" 
-# PRE-SAVED SO IT CAN BE PASSED IN HERE. e.g.
-# posterior::summarize_draws(as_draws(fittedModelRMR))
-# RMR <- RMRfun(mm, Tm, mesotherm, pars)
+# Estimate routine metabolic rate RMR over the range of  body temperatures
+RMR <- RMRfun(mm, Tm, mesotherm, pars = pars)
 
 
+# create a tibble for plotting in ggplot
+dd <- tibble(Ta = Ta, Tm = Tm, RMR = RMR)
 
 ```
 

@@ -17,18 +17,19 @@ function(m, meso, pars, preK = 1){
   kk <- kfun(m) * preK
   
   # extract the parameters to pass onwards
-  aa <- pars[1] # alpha, the coefficient of log10(mass) in RMR
-  bb <- pars[2] # beta, the coefficient of body temperature
-  gg <- pars[3] # gamma, the intercept
+  gg <- pars[1] # gamma, the intercept
+  aa <- pars[2] # alpha, the coefficient of log10(mass) in RMR
+  bb <- pars[3] # beta, the coefficient of body temperature
   ifelse(meso, pp <- pars[4],  pp <- 0) # psi, the effect of mesothermy
-  om <- pars[5] # omega, the exponent of the multiplier of mass to convert RMR to T0
+  # om <- pars[5] # omega, the exponent of the multiplier of mass to convert RMR to T0
+  # omega is an internal data object loaded and available to files in R/
   
   # this approximation involves complex numbers owing to the branching of the 
   # Lambert function, but only the real component is meaningful for the two 
   # branches that concern us.
   x_max <- (0.434294481903252 * 
               (log((0.434294481903252 * kk * m^(1 - aa)) / (bb)) - 
-                          (2.30258509299405 * (gg + pp -om)) - 1 )) / bb
+                          (2.30258509299405 * (gg + pp -omega)) - 1 )) / bb
   
   return(x_max)
   

@@ -6,6 +6,7 @@ vignette: >
   %\VignetteIndexEntry{The relationship between critical ambient water temperature, body mass and thermal strategy}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{tidyverse}
+  %\VignetteDepends{brms}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -19,6 +20,8 @@ library(predictFishRMR)
 # for plotting and tibble manipulation
 library(tidyverse)
 
+# for extracting the coefficients of the brms regression model
+library(brms)
 
 ```
 
@@ -30,6 +33,15 @@ In this example we explore how our estimate of critical ambient temperature, abo
 
 # generate a sequence of mass for the x-axis of the plots
 m_range <- seq(100, 10000, length.out = 100)
+
+# load and retrieve the parameters for the RMR regression
+# order of the parameters is:
+# 1 = Intercept (gamma)
+# 2 = alpha the coefficient of log10(mass)
+# 3 = beta the coefficient of Body temperature
+# 4 = the effect of mesothermy (psi)
+data("fittedModelRMR")
+pars <- brms::fixef(fittedModelRMR)[,1]
 
 # calculate the mean predicted Ta_crit for the mass vector
 Ta_crit_meso <- maxAmbientTemp(m_range, meso = TRUE, pars, preK = 1)
@@ -61,7 +73,8 @@ gg_crit <- ggplot(data = dd_crit,
   geom_ribbon(aes(ymin = low, 
                   ymax = high), 
               alpha = 0.1, 
-              linetype = 2) + 
+              linetype = 2, 
+              show.legend = FALSE) + 
   ylab("Critical water temperature (C)") + 
   xlab("Mass (kg)")
 

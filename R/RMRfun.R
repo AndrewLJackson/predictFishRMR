@@ -15,7 +15,7 @@ function(m, Tm, meso, pars) {
   ifelse(meso, b_meso <- pars[4],  b_meso <- 0)
 
   # calculate RMR based on the regression parameters
-  RMR <- 10 ^ (pars[1]*log10(m) + pars[2]*Tm + pars[3] + b_meso)
+  RMR <- 10 ^ (pars[1] + pars[2]*log10(m) + pars[3]*Tm + b_meso)
   
   # return output
   return(RMR)

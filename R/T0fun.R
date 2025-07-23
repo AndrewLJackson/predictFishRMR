@@ -16,7 +16,9 @@ function(m, Tm, meso, pars){
   # fish of mass m, meso = T or F as a logical toggle for whether to 
   # indicate a regional endotherm (T) or an ectotherm (F), and parameters
   # of the corresponding linear model.
+
   
-  return(RMRfun(m, Tm,meso = meso, pars = pars) / (m*10^pars[5]))
+  # Equation 6 in the paper
+  return(RMRfun(m, Tm,meso = meso, pars = pars) / (m*10^omega))
   
 }
