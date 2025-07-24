@@ -20,4 +20,10 @@ Imports:
 Suggests:
     tidyverse,
     patchwork,
-    knitr
+    knitr,
+    ggeffects,
+    nlme,
+    rstan,
+    brms,
+    ape,
+    parallel
