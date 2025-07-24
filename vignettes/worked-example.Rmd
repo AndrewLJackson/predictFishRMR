@@ -32,10 +32,10 @@ For this example we pick a fish with mass = 3000g.
 ```{r}
 
 # mass of fish
-mm <- 3000
+mm <- 1000
 
 # range of water temperatures in C
-Ta <- 10
+Ta <- seq(0,30, by = 0.25)
 
 # mesotherm (meso = T) or ecotherm (meso = F)?
 mesotherm <- TRUE
@@ -47,17 +47,35 @@ K <- kfun(m = mm)
 data("fittedModelRMR")
 pars <- brms::fixef(fittedModelRMR)[,1]
 
-# Estimate the body temperature at thermal equilibrium
-Tm <- bodyTempLambert(Ta, m = mm, k = K, meso = mesotherm, pars = pars)
+# loop over the sequence of water temperatures in the vector Ta
+# Estimate the body temperature at thermal equilibrium and take only the 
+# first branch of the Lambert function estimates. 
+Tm <- Ta |>
+  map(\(x) bodyTempLambert(x, m = mm, k = K, meso = mesotherm, pars = pars)) |>
+  bind_rows() |>
+  filter(branch == 0)
 
 # Estimate routine metabolic rate RMR over the range of  body temperatures
-RMR <- RMRfun(mm, Tm, mesotherm, pars = pars)
+RMR <- RMRfun(mm, Tm$y, mesotherm, pars = pars)
 
 
 # create a tibble for plotting in ggplot
 dd <- tibble(Ta = Ta, Tm = Tm, RMR = RMR)
 
 ```
+
+Plot the relationship between RMR and Ta
+
+```{r}
+
+g1 <- ggplot(data = dd, mapping = aes(x = Ta, y = Tm$y)) + 
+  geom_line() + 
+  ggtitle(paste0("mass = ", mm, "kg"))
+
+print(g1)
+
+```
+
 
 
 
