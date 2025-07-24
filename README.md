@@ -34,7 +34,7 @@ Alternatively you can install this package easily by cloning the repository to y
 devtools::install(build_vignettes = TRUE)
 ```
 
-## Notes for Nacho and Nick
+## Notes for co-authors
 
 + The file `vignettes/fit-RMR-regression.Rmd` contains the code to run the phylogenetic regression estimating RMR from mass and thermal strategy. This file needs to be updated with the latest dataset and re-run. The last chunk is not evaluated by default, but we need to then save the fitted model object and put it in the package folder `data/`. This will then allow the other functions to look up this model fit and pull the coefficients for the rest of the functions. `vignette("fit-RMR-regression", package = "predictFishRMR")`
 + The file `vignettes/regression-K-from_mass.Rmd` similarly runs the regression estimating K from mass and produces a figure with the confidence intervals for this regression. The model is fitted by the function `fitRegression()` using the raw data save as a dataset loaded by `data(Kmass)`. There is no need to update this model fitting file or data unless something new has arisen. `vignette("regression-K-from-mass", package = "predictFishRMR")`
