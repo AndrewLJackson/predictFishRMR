@@ -27,7 +27,9 @@ or you can install a particular version
 pak::pak("AndrewLJackson/predictFishRMR@v0.1.2-beta", build_vignettes = TRUE)
 ```
 
-Alternatively you can install this package easily by cloning the repository to your local computer or downloading the zip file and extracting it to your local working directory. Then open the `predictFishRMR.Rproj` to load Rstudio and point it to this package. Then you can install it along with the vingettes using:
+### Alternative installation route
+
+You can install this package easily by cloning the repository to your local computer or downloading the zip file and extracting it to your local working directory. Then open the `predictFishRMR.Rproj` to load Rstudio and point it to this package. Then you can install it along with the vingettes using:
 
 ``` r
 # install.packages("devtools")
