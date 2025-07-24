@@ -24,6 +24,14 @@ Alternatively you can install the development version of predictFishRMR from [Gi
 pak::pak("AndrewLJackson/predictFishRMR")
 ```
 
+or you can install a particular version
+
+``` r
+# install.packages("pak")
+pak::pak("AndrewLJackson/predictFishRMR@v0.1.1-beta")
+```
+
+
 ## Notes for Nacho and Nick
 
 + The file vignette file `vignettes/fit-RMR-regression.Rmd` contains the code to run the phylogenetic regression estimating RMR from mass and thermal strategy. This file needs to be updated with the latest dataset and re-run. The last chunk is not evaluated by default, but we need to then save the fitted model object and put it in the package folder `data/`. This will then allow the other functions to look up this model fit and pull the coefficients for the rest of the functions. 
