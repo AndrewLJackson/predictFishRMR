@@ -38,7 +38,7 @@ pak::pak("AndrewLJackson/predictFishRMR@v0.1.1-beta")
 + The file `vignettes/regression-K-from_mass.Rmd` similarly runs the regression estimating K from mass and produces a figure with the confidence intervals for this regression. The model is fitted by the function `fitRegression()` using the raw data save as a dataset loaded by `data(Kmass)`. There is no need to update this model fitting file or data unless something new has arisen. 
 + the file `vignettes/predict-Ta-crit-sensitivity.Rmd` generates some figures that we discussed adding to the paper including a sensitivity analysis of how the estimated Ta that permits thermal equilibrium varies with mass and thermal strategy for double and half K estimates.
 + the file `vignettes/worked-example.Rmd`
-+ when it comes to resubmitting the paper, we can create a new release and give it a stable link to install taht particular verison of the package along with a doi.
++ when it comes to resubmitting the paper, we can create a new release and give it a stable link to install that particular version of the package along with a doi. We currently have a doi for the version `v0.1.1-beta` [GitHub](https://github.com/AndrewLJackson/predictFishRMR)
 
 
 ## Example
