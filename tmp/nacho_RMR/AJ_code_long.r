@@ -25,8 +25,8 @@ library(maps)            # plot maps
 # SECTION 1: HOUSEKEEPING
 
 # --- open data
-rmr_data <- read.csv("MandT_indiv_whalefixed.csv")
-tree <- read.tree("fish_shark_combined.tre")
+rmr_data <- read.csv("tmp/nacho_RMR/MandT_indiv_whalefixed_raw.csv")
+tree <- read.tree("tmp/nacho_RMR/fish_shark_combined.tre")
 
 # Compare species between dataset and phylogeny
 unique(rmr_data$spp)
@@ -83,6 +83,11 @@ rmr_data <- rmr_data[complete.cases(rmr_data),]
 
 #rownames(rmr_data) <- rmr_data$spp
 #spp <- rownames(rmr_data)
+
+## Andrew code added 11 Aug 2025
+# calculate natural log Ln(M) and Ln(RMR)
+rmr_data$logM <- log(rmr_data$mass.kg)
+rmr_data$logRMR <- log(rmr_data$RMR.mg.O2.h)
 
 # --- check for potential cofounding effects between
 

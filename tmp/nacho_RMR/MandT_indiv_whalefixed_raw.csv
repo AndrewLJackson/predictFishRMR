@@ -1,0 +1,519 @@
+method,spp,T,RMR mg O2/h,mass kg,therm
+DO,A. fimbria,12,59.14636202,0.675,ecto
+DO,A. fimbria,12,2.373732678,0.01,ecto
+DO,Abudefduf vaigiensis,29,0.565285714,0.000478,ecto
+DO,Ambassis sp,29,0.173142857,0.000355,ecto
+DO,Ambassis sp.,28,0.126285714,0.000266,ecto
+DO,Amblyeleotris sp.,29,0.045714286,5.83E-05,ecto
+DO,Amblygobius sp.,30,0.020571429,4.76E-05,ecto
+DO,Ammodytes sp.,7.3,0.001857143,4.12E-06,ecto
+DO,Anguilla anguilla,18,113.7068685,0.90567,ecto
+DO,Anguilla anguilla,20.5,17.7972876,0.3,ecto
+DO,Anguilla anguilla,20.5,15.4742328,0.295,ecto
+DO,Anguilla australis,18,101.0458155,0.80869,ecto
+DO,Anoplogaster cornuta,5,1.745714286,0.0509,ecto
+DO,Anoplogaster cornuta,7,0.793999999,0.017368,ecto
+DO,Anoplogaster cornuta,5,0.757142858,0.040233,ecto
+DO,Anoplopoma fimbria,8,169.024,2.78,ecto
+DO,Anoplopoma fimbria,8,48.95,0.25,ecto
+DO,Apogon sp.,30,0.011571429,7.5E-06,ecto
+DO,Argyropelecus aculeatus,20,0.599999999,0.002609,ecto
+DO,Argyrosomus japonicus,22,124.1,0.34,ecto
+DO,Argyrosomus japonicus,26,110.1,1.1406,ecto
+DO,Argyrosomus japonicus,20,83.3,1.1406,ecto
+DO,Argyrosomus japonicus,26,67.1,0.4967,ecto
+DO,Argyrosomus japonicus,14,63.9,1.1406,ecto
+DO,Argyrosomus japonicus,20,49.7,0.4967,ecto
+DO,Argyrosomus japonicus,35,46.07123877,0.1818,ecto
+DO,Argyrosomus japonicus,26,37.1,0.2405,ecto
+DO,Argyrosomus japonicus,14,31.4,0.4967,ecto
+DO,Argyrosomus japonicus,20,28.2,0.2405,ecto
+DO,Argyrosomus japonicus,26,21.2,0.1222,ecto
+DO,Argyrosomus japonicus,14,17.7,0.2405,ecto
+DO,Argyrosomus japonicus,20,16.4,0.1222,ecto
+DO,Argyrosomus japonicus,26,12.4,0.0604,ecto
+DO,Argyrosomus japonicus,20,9.7,0.0604,ecto
+DO,Argyrosomus japonicus,14,9.4,0.1222,ecto
+DO,Argyrosomus japonicus,10,8.437019308,0.1818,ecto
+DO,Argyrosomus japonicus,14,5.6,0.0604,ecto
+DO,Argyrosomus japonicus,25,0.5686996,0.0001031,ecto
+DO,Argyrosomus japonicus,25,0.020711,0.0000149,ecto
+DO,Argyrosomus japonicus,25,0.0037596,0.0000026,ecto
+DO,"Ariosoma balearicum, leptocephalus larvae",25,0.164285714,0.000721,ecto
+DO,Aristostomias scintillans,5,0.301428571,0.0211,ecto
+DO,Austrolycus depressiceps,10,1.423911,0.05,ecto
+DO,Austrolycus depressiceps,4,0.719955,0.05,ecto
+DO,Austrolycus depressiceps,2,0.527967,0.05,ecto
+DO,Bajacalifornia burragei,5,0.178571429,0.0249,ecto
+DO,Bathylagus antarcticus,0.5,0.267428571,0.0104,ecto
+DO,Bathylagus milleri,5,0.645714286,0.0411,ecto
+DO,Bathylagus ochotensis,10,0.408571428,0.0034,ecto
+DO,Bathylagus wesethi,10,0.204285714,0.0015,ecto
+DO,Borostomias panamensis,5,2.67714286,0.11025,ecto
+DO,Brevoortia tyrannus,20,30.16999999,0.302,ecto
+DO,Callionymus sp,16,0.005371429,8.65E-06,ecto
+DO,Caracanthus sp.,28,0.032714286,2.84E-05,ecto
+DO,Caracanthus sp.,28,0.009571429,6.3E-06,ecto
+DO,Carcharhinus acronotus,28,977.5350001,3.509999996,ecto
+DO,Carcharhinus acronotus,27,599.0400004,1.559999999,ecto
+DO,Carcharhinus acronotus,28,393.6599999,0.81,ecto
+DO,Carcharhinus acronotus,28,387.5999997,0.850000001,ecto
+DO,Carcharhinus acronotus,27,300.0000002,0.749999999,ecto
+DO,Carcharhinus acronotus,28,240.0299999,0.629999999,ecto
+DO,Carcharhinus acronotus,28,218.5029999,0.47,ecto
+DO,Carcharhinus acronotus,29,207.3500001,0.549999999,ecto
+DO,Carcharhinus acronotus,29,183.7350001,0.45,ecto
+DO,Carcharhinus acronotus,28,150.3000001,0.45,ecto
+DO,Carcharhinus leucas,26.6,1847.087858,7,ecto
+DO,Carcharhinus leucas,26.1,1494.741271,5,ecto
+DO,Carcharhinus plumbeus,25,1042.732301,8.601539004,ecto
+DO,Carcharhinus plumbeus,25,992.4590493,6.827880003,ecto
+DO,Carcharhinus plumbeus,25,939.6720993,8.686810508,ecto
+DO,Carcharhinus plumbeus,25,846.6667,4.986004005,ecto
+DO,Carcharhinus plumbeus,25,841.6393398,6.674390294,ecto
+DO,Carcharhinus plumbeus,25,819.0163997,5.292982998,ecto
+DO,Carcharhinus plumbeus,25,788.8524996,5.787560994,ecto
+DO,Carcharhinus plumbeus,25,763.7158008,6.964315396,ecto
+DO,Carcharhinus plumbeus,25,756.1748694,5.565853603,ecto
+DO,Carcharhinus plumbeus,25,675.7377307,4.184446302,ecto
+DO,Carcharhinus plumbeus,25,585.2459002,3.024746703,ecto
+DO,Carcharhinus plumbeus,25,504.8087499,1.8309381,ecto
+DO,Carcharhinus plumbeus,25,499.7814296,3.587542296,ecto
+DO,Carcharhinus plumbeus,25,474.6447997,1.745665999,ecto
+DO,Carcharhinus plumbeus,25,391.694,0.995272041,ecto
+DO,Carcharhinus plumbeus,25,281.0928999,1.558067602,ecto
+DO,Carcharodon carcharius,17.6,7782.999992,36.20000004,endo
+DO,Carcharodon carcharius,17.8,7086.239998,25.20000001,endo
+DO,Carcharodon carcharius,16.5,6336.399996,27.99999998,endo
+DO,Carcharodon carcharius,18.3,6199.560007,30.59999997,endo
+DO,Carcharodon carcharius,17.5,4291.740001,22.59999999,endo
+DO,Caulophrynidae sp.,5,0.134285714,0.0281,ecto
+DO,Chiasmodon niger,5,2.695714285,0.0766,ecto
+DO,Coregonus lavaretus (larvae),12,0.087656601,0.00015565,ecto
+DO,Coregonus lavaretus (larvae),10,0.072715135,0.00015565,ecto
+DO,Coregonus lavaretus (larvae),8,0.061260011,0.00015565,ecto
+DO,Coregonus lavaretus (larvae),4,0.050800985,0.00015565,ecto
+DO,Coryphaena hippurus,20.3,2154.75,8.45,ecto
+DO,Coryphaena hippurus,27,0.404285715,0.0009,ecto
+DO,Cubiceps whiteleggii,27,1.07857143,0.0012,ecto
+DO,Cyclothone acclinidens,3,0.051571429,0.000875,ecto
+DO,Cyclothone acclinidens,3,0.038,0.000524,ecto
+DO,Cyclothone acclinidens,3,0.022,0.00023,ecto
+DO,Cyclothone microdon,0.5,0.018285714,0.0008,ecto
+DO,Cyprinodon variegatus,20,0.795,0.00294,ecto
+DO,Cypselurus sp,26.4,0.165142857,0.000133,ecto
+DO,Diaphus mollis,20,0.070142857,0.000168,ecto
+DO,Diaphus theta,10,0.624285714,0.0021,ecto
+DO,Dicentrarchus labrax,18,347.256,0.42,ecto
+DO,Dicentrarchus labrax,20,226.5029,0.629,ecto
+DO,Dicentrarchus labrax,20,226.44,0.629,ecto
+DO,Dicentrarchus labrax,25,213.9858,0.629,ecto
+DO,Dicentrarchus labrax,14,174.246,0.514,ecto
+DO,Dicentrarchus labrax,18,154.49298,0.258,ecto
+DO,Dicentrarchus labrax,19.95,109.11453,0.287,ecto
+DO,Dicentrarchus labrax,20,101.818,0.2,ecto
+DO,Dicentrarchus labrax,15,100.64,0.629,ecto
+DO,Dicentrarchus labrax,15,100.64,0.629,ecto
+DO,Dicentrarchus labrax,20,75,0.25,ecto
+DO,Dicentrarchus labrax,10,40.885,0.629,ecto
+DO,Dicentrarchus labrax,10,40.8221,0.629,ecto
+DO,Dicentrarchus labrax,24,22.79026711,0.1422,ecto
+DO,Dicentrarchus labrax,24,21.21183652,0.1613,ecto
+DO,Dicentrarchus labrax,24,17.46748955,0.1255,ecto
+DO,Dicentrarchus labrax,18,13.22587913,0.1076,ecto
+DO,Dicentrarchus labrax,18,11.77907409,0.1072,ecto
+DO,Dicentrarchus labrax,18,9.293729065,0.08,ecto
+DO,Electrona antarctica,0.5,0.276,0.0046,ecto
+DO,Eleginops maclovinus,10,1.551903,0.05,ecto
+DO,Eleginops maclovinus,2,1.471908,0.05,ecto
+DO,Eleginops maclovinus,4,1.455909,0.05,ecto
+DO,Engraulis capensis,16,1.152857144,0.0104,ecto
+DO,Engraulis ringens,15,5.529999996,0.0126,ecto
+DO,Engraulis ringens,15,2.641428571,0.007424,ecto
+DO,Euthynnus affinis,24,110.4685715,0.127,endo
+DO,Gadus macrocephalus,14,8.97776,0.088,ecto
+DO,Gadus macrocephalus,10,8.96984,0.088,ecto
+DO,Gadus macrocephalus,10,8.89944,0.088,ecto
+DO,Gadus macrocephalus,6,8.382,0.088,ecto
+DO,Gadus macrocephalus,14,8.05728,0.088,ecto
+DO,Gadus macrocephalus,6,7.96752,0.088,ecto
+DO,Gadus macrocephalus,8,5.9736,0.095,ecto
+DO,Gadus macrocephalus,2,5.8843,0.095,ecto
+DO,Gadus macrocephalus,4,5.8824,0.095,ecto
+DO,Gadus macrocephalus,6,5.6069,0.095,ecto
+DO,Gadus morhua,10,73.4209,0.371,ecto
+DO,Gadus morhua,15,61.5072,0.298,ecto
+DO,Gadus morhua,15,48.504,0.15,ecto
+DO,Gadus morhua,5,35.4772,0.242,ecto
+DO,Gadus morhua,10,28.698,0.15,ecto
+DO,Gadus morhua,4,20.824,0.152,ecto
+DO,Gadus morhua,10,0.599770512,0.00781,ecto
+DO,Gadus morhua,10,0.397031184,0.00517,ecto
+DO,Gadus morhua,10,0.26494344,0.00345,ecto
+DO,Gadus morhua,10,0.194291856,0.00253,ecto
+DO,Gadus morhua,10,0.176244984,0.00153,ecto
+DO,Galeoides sp.,26.4,0.281428571,0.0001917,ecto
+DO,Gerres sp.,29,0.076428571,7.47E-05,ecto
+DO,Ginglymostoma cirratum,29,1650.75,10.65,ecto
+DO,Ginglymostoma cirratum,29,1581.2,11.8,ecto
+DO,Ginglymostoma cirratum,29.3,1395.18,10.11,ecto
+DO,Ginglymostoma cirratum,29,1376,8.6,ecto
+DO,Ginglymostoma cirratum,29,1212.7,9.05,ecto
+DO,Ginglymostoma cirratum,29,1182,9.85,ecto
+DO,Ginglymostoma cirratum,22.5,1168.2,11.8,ecto
+DO,Ginglymostoma cirratum,22.5,1033.05,10.65,ecto
+DO,Ginglymostoma cirratum,22.5,850.7,9.05,ecto
+DO,Ginglymostoma cirratum,22.5,844.2,6.7,ecto
+DO,Ginglymostoma cirratum,23.9,793.25,8.35,ecto
+DO,Ginglymostoma cirratum,22.5,782.6,8.6,ecto
+DO,Ginglymostoma cirratum,22.5,755.25,7.95,ecto
+DO,Ginglymostoma cirratum,22.5,738.75,9.85,ecto
+DO,Gobius paganellus,20,0.7257,0.0177,ecto
+DO,Gobius paganellus,20,0.71961,0.01411,ecto
+DO,Gobius paganellus,20,0.6582,0.01097,ecto
+DO,Gobius paganellus,20,0.64856,0.01474,ecto
+DO,Gobius paganellus,20,0.6084,0.01352,ecto
+DO,Gobius paganellus,20,0.57851,0.01411,ecto
+DO,Gobius paganellus,20,0.472,0.01475,ecto
+DO,Gobius paganellus,20,0.45441,0.01377,ecto
+DO,Gobius paganellus,20,0.44733,0.01209,ecto
+DO,Gobius paganellus,20,0.42826,0.01127,ecto
+DO,Gobius paganellus,20,0.41616,0.01156,ecto
+DO,Gobius paganellus,20,0.40326,0.01034,ecto
+DO,Gobius paganellus,20,0.329,0.0094,ecto
+DO,Gonostoma elongatum,14,0.567142857,0.010192,ecto
+DO,Gymnoscopelus brauer,0.5,0.453142858,0.0122,ecto
+DO,Gymnoscopelus opisthopterus,0.5,0.603428572,0.0192,ecto
+DO,"Gymnothorax saxicola, leptocephalus larvae",25,0.097142857,0.0004,ecto
+DO,Harpagifer bispinis,2,1.407912,0.05,ecto
+DO,Harpagifer bispinis,4,1.27992,0.05,ecto
+DO,Harpagifer bispinis,10,1.087932,0.05,ecto
+DO,Herklotsichthys sp,27,0.255857143,0.00013,ecto
+DO,Heterodontus portusjacksoni,16,255.8104223,1.9,ecto
+DO,Hexagrammos otakii,14.1,0.004514286,8.13E-06,ecto
+DO,Hypoatherina sp,26,0.285,0.000182,ecto
+DO,Hypoatherina sp.,29,0.359428572,0.000225,ecto
+DO,Isurus oxyrinchus,18.3,2390.8,6.95,endo
+DO,Isurus oxyrinchus,19.3,2087.399999,7.100000005,endo
+DO,Isurus oxyrinchus,19.5,1886.500002,4.9,endo
+DO,Isurus oxyrinchus,18.5,1770.999999,4.600000003,endo
+DO,Isurus oxyrinchus,19.2,1767.000002,9.499999994,endo
+DO,Isurus oxyrinchus,18,1754.200001,4.9,endo
+DO,Isurus oxyrinchus,16.5,1699.199998,5.900000005,endo
+DO,Isurus oxyrinchus,18.6,1672.800001,8.199999993,endo
+DO,Isurus oxyrinchus,17.8,1536.999998,5.300000005,endo
+DO,Isurus oxyrinchus,18,1439.1,3.9,endo
+DO,Isurus oxyrinchus,18,1236.399999,4.399999995,endo
+DO,Katsuwonus pelamis,23.5,1441.710001,1.962,endo
+DO,Lampanyctus nobilis,7,0.225428572,0.00367,ecto
+DO,Lampanyctus regalis,5,0.045571429,0.0029,ecto
+DO,Lampanyctus ritteri,10,0.177142857,0.0021,ecto
+DO,Leiognathus sp.,29,0.164285714,0.000146,ecto
+DO,Lepidonotothen nudifrons,0,1.3565436,0.03508,ecto
+DO,Lepidonotothen squamifrons,2,27.5836484,0.28721,ecto
+DO,Lepidophanes guentheri,20,0.422714286,0.001292,ecto
+DO,Lethrinus sp.,29,0.124714286,0.00015,ecto
+DO,Lethrinus sp.,30,0.122714286,0.000123,ecto
+DO,Lithognathus lithognathus,20,4.716,0.0524,ecto
+DO,Lutjanus carponotatus,29,0.278571428,0.000292,ecto
+DO,Lutjanus guttatus,32,8.388,0.02,ecto
+DO,Lutjanus guttatus,29,7.494,0.02,ecto
+DO,Lutjanus guttatus,23,5.132,0.02,ecto
+DO,Mallotus villosus,5,14.1512,0.0266,ecto
+DO,Melamphaes acanthomus,5,0.298571429,0.0174,ecto
+DO,Melanocetus johnsonii,5,0.511428572,0.030163,ecto
+DO,Melanonus zugmayeri,5,0.765714286,0.0315,ecto
+DO,Merlangius merlangus,10,47.6982,0.297,ecto
+DO,Monacanthidae sp,30,0.261428572,0.000286,ecto
+DO,Monacanthidae sp.,29,0.2,0.000218,ecto
+DO,Mullidae sp.,29,0.115428571,8.04E-05,ecto
+DO,Mustelus antarcticus ,16,542.5343536,4.35,ecto
+DO,Myctophum affine,14,0.537428571,0.0019,ecto
+DO,Myoxocephalus scorpius,10,10.89,0.225,ecto
+DO,Negaprion brevirostris,30,374.55,1.5,ecto
+DO,Negaprion brevirostris,21,164.55,1.05,ecto
+DO,Negaprion brevirostris ,28.6416129,6200.071186,17.15,ecto
+DO,Negaprion brevirostris ,29.68322581,6197.041016,17.15,ecto
+DO,Negaprion brevirostris ,30.22580645,5823.546305,12.5,ecto
+DO,Negaprion brevirostris ,27.37935484,5809.836276,14.65,ecto
+DO,Negaprion brevirostris ,29.36870968,5789.959039,12.5,ecto
+DO,Negaprion brevirostris ,29.54258065,5499.532655,17.15,ecto
+DO,Negaprion brevirostris ,31.27774194,5273.932519,9.9,ecto
+DO,Negaprion brevirostris ,27.31806452,5084.910504,14.65,ecto
+DO,Negaprion brevirostris ,27.33870968,5051.83101,14.65,ecto
+DO,Negaprion brevirostris ,31.41645161,5002.867922,9.9,ecto
+DO,Negaprion brevirostris ,28.74322581,4932.378345,12.5,ecto
+DO,Negaprion brevirostris ,30.7025,4906.976664,12.5,ecto
+DO,Negaprion brevirostris ,29.95193548,4433.863727,14.65,ecto
+DO,Negaprion brevirostris ,30.26548387,4295.207641,12.5,ecto
+DO,Negaprion brevirostris ,30.01774194,4204.71315,14.65,ecto
+DO,Negaprion brevirostris ,31.20935484,3869.695766,9.9,ecto
+DO,Negaprion brevirostris ,30.35258065,3753.794831,9.9,ecto
+DO,Negaprion brevirostris ,31.05258065,3707.343363,9.9,ecto
+DO,Negaprion brevirostris ,29.22,3438.464275,7.65,ecto
+DO,Negaprion brevirostris ,30.05451613,3284.920419,7.65,ecto
+DO,Negaprion brevirostris ,30.80612903,3281.880788,7.725,ecto
+DO,Negaprion brevirostris ,30.03548387,3246.319051,7.65,ecto
+DO,Negaprion brevirostris ,29.19193548,3223.447493,7.65,ecto
+DO,Negaprion brevirostris ,28.34225806,3213.865382,7.65,ecto
+DO,Negaprion brevirostris ,29.81806452,3196.21509,9.9,ecto
+DO,Negaprion brevirostris ,29.16387097,3187.761722,7.65,ecto
+DO,Negaprion brevirostris ,29.24387097,3159.66817,7.65,ecto
+DO,Negaprion brevirostris ,30.01677419,3123.493921,7.65,ecto
+DO,Negaprion brevirostris ,29.10322581,3110.572873,7.65,ecto
+DO,Negaprion brevirostris ,28.36612903,3106.804959,7.65,ecto
+DO,Negaprion brevirostris ,28.45741935,3104.20112,7.65,ecto
+DO,Negaprion brevirostris ,28.47903226,3040.631829,7.65,ecto
+DO,Negaprion brevirostris ,28.43225806,3032.781894,7.65,ecto
+DO,Negaprion brevirostris ,30.04774194,2984.680403,7.65,ecto
+DO,Negaprion brevirostris ,29.97193548,2964.459984,7.65,ecto
+DO,Negaprion brevirostris ,28.32032258,2958.150731,7.65,ecto
+DO,Negaprion brevirostris ,29.07258065,2939.44826,7.65,ecto
+DO,Negaprion brevirostris ,29.9983871,2931.091896,7.65,ecto
+DO,Negaprion brevirostris ,30.57516129,2898.48207,7.725,ecto
+DO,Negaprion brevirostris ,29.13258065,2839.925265,7.65,ecto
+DO,Negaprion brevirostris ,30.02612903,2829.612471,7.65,ecto
+DO,Negaprion brevirostris ,30.04258065,2822.226517,7.65,ecto
+DO,Negaprion brevirostris ,28.41193548,2777.033614,7.65,ecto
+DO,Negaprion brevirostris ,28.29580645,2768.732737,7.65,ecto
+DO,Negaprion brevirostris ,29.86419355,2746.613178,7.65,ecto
+DO,Negaprion brevirostris ,28.38612903,2741.207566,7.65,ecto
+DO,Negaprion brevirostris ,28.93677419,2686.174946,7.65,ecto
+DO,Negaprion brevirostris ,29.00709677,2632.355356,7.65,ecto
+DO,Negaprion brevirostris ,28.27096774,2574.065614,7.65,ecto
+DO,Negaprion brevirostris ,29.93677419,2555.339687,7.65,ecto
+DO,Negaprion brevirostris ,30.24612903,2488.610399,7.725,ecto
+DO,Negaprion brevirostris ,28.24612903,2420.400618,7.65,ecto
+DO,Negaprion brevirostris ,30.34548387,2393.565421,7.725,ecto
+DO,Negaprion brevirostris ,29.90354839,2370.944209,7.65,ecto
+DO,Negaprion brevirostris ,29.30903226,2250.827904,7.725,ecto
+DO,Negaprion brevirostris ,30.73225806,2244.09572,7.725,ecto
+DO,Negaprion brevirostris ,30.55322581,2242.340471,7.725,ecto
+DO,Negaprion brevirostris ,29.19096774,2169.139037,7.725,ecto
+DO,Negaprion brevirostris ,28.83709677,2123.343609,7.725,ecto
+DO,Negaprion brevirostris ,30.63612903,2122.179428,7.725,ecto
+DO,Negaprion brevirostris ,30.68709677,2101.370095,7.725,ecto
+DO,Negaprion brevirostris ,28.18,2101.233762,7.65,ecto
+DO,Negaprion brevirostris ,30.47741935,1937.203835,7.725,ecto
+DO,Negaprion brevirostris ,29.2,867.912115,2.945,ecto
+DO,Negaprion brevirostris ,29.2,852.947981,2.945,ecto
+DO,Negaprion brevirostris ,29.3,718.271953,2.945,ecto
+DO,Negaprion brevirostris ,29.2,703.3081135,2.945,ecto
+DO,Negaprion brevirostris ,29.3,673.38014,2.945,ecto
+DO,Negaprion brevirostris ,29.3,673.38014,2.945,ecto
+DO,Negaprion brevirostris ,30.3,673.380036,2.52,ecto
+DO,Negaprion brevirostris ,29.2,658.416006,2.945,ecto
+DO,Negaprion brevirostris ,30.3,628.488096,2.04,ecto
+DO,Negaprion brevirostris ,29.2,628.4880325,2.945,ecto
+DO,Negaprion brevirostris ,29.2,613.5238985,2.945,ecto
+DO,Negaprion brevirostris ,29.2,598.560059,2.945,ecto
+DO,Negaprion brevirostris ,30.1,553.668046,2.105,ecto
+DO,Negaprion brevirostris ,29.9,553.668046,2.105,ecto
+DO,Negaprion brevirostris ,30.7,538.704024,2.04,ecto
+DO,Negaprion brevirostris ,30.2,538.704024,2.04,ecto
+DO,Negaprion brevirostris ,30.4,523.740012,2.04,ecto
+DO,Negaprion brevirostris ,29.9,523.739998,2.105,ecto
+DO,Negaprion brevirostris ,29.4,508.7761385,2.945,ecto
+DO,Negaprion brevirostris ,30.5,493.811988,2.04,ecto
+DO,Negaprion brevirostris ,27.6,493.811955,1.95,ecto
+DO,Negaprion brevirostris ,30.3,493.81195,2.105,ecto
+DO,Negaprion brevirostris ,29.8,493.81195,2.105,ecto
+DO,Negaprion brevirostris ,30,418.9920405,2.105,ecto
+DO,Neomyxus sp,28,0.057,4.57E-05,ecto
+DO,Neomyxus sp,28,0.037714286,2.76E-05,ecto
+DO,Neopomacentrus bankieri,28,0.219571428,0.000348,ecto
+DO,Notothenia rossii,3,0.737142858,0.003,ecto
+DO,Notothenia rossii,1,20.71310535,0.4795,ecto
+DO,Omobranchus sp.,30,0.025285714,2.42E-05,ecto
+DO,Oncorhynchus nerka,12.5,739.2,2.8,ecto
+DO,Oncorhynchus tshawytscha,19,4.12236,0.0198,ecto
+DO,Oncorhynchus tshawytscha,15,3.06504,0.0198,ecto
+DO,Oneirodes acanthias,5,0.048,0.0042,ecto
+DO,Oneirodes sp.,5,0.365714285,0.0534,ecto
+DO,"Ophichthus gomesii, leptocephalus larvae",25,0.105285714,0.0002,ecto
+DO,"Paraconger caudilimbatus, leptocephalus larvae",25,0.058428571,0.000224,ecto
+DO,Paralichthys olivaceus,20,7.22475,0.0585,ecto
+DO,Paralichthys olivaceus,20,2.5375,0.0203,ecto
+DO,Paralichthys olivaceus,20,0.8415,0.0033,ecto
+DO,Paranotothenia magellanica,2,0.751953,0.05,ecto
+DO,Parvilux ingens,5,0.161428571,0.0094,ecto
+DO,Patagonotothen sima,2,1.471908,0.05,ecto
+DO,Patagonotothen sima,4,1.455909,0.05,ecto
+DO,Patagonotothen sima,10,0.335979,0.05,ecto
+DO,Pelates quadrilineatus,28,0.013428571,1.92E-05,ecto
+DO,Platichthys stellatus,8.8,4.32,0.032,ecto
+DO,Pollachius virens,10,152.7265,0.485,ecto
+DO,Pomacentrus sp.,25,0.077285714,6.5E-05,ecto
+DO,Poromitra crassiceps,5,0.268571428,0.0171,ecto
+DO,Pseudocaranx dentex (formaly Longirostrum delicatissimus) ,28.4,0.19,0.000139,ecto
+DO,"Ranzania laevis, Ostracion boops stage",22.4,0.013014286,7.29E-06,ecto
+DO,Sagamichthys abei,5,0.130285714,0.0057,ecto
+DO,Salmo salar,23,269.276,0.413,ecto
+DO,Salmo salar,3,122.624,0.479,ecto
+DO,Salmo salar,12,115.2862838,1.132,ecto
+DO,Salmo salar,15.2,15.27814906,0.0694,ecto
+DO,Salmo salar,14,9.97953624,0.0452,ecto
+DO,Salmo salar,10.8,5.878864548,0.0346,ecto
+DO,Salmo trutta,15,35.709768,0.054,ecto
+DO,Salmo trutta,15,30.5452908,0.0516,ecto
+DO,Salmo trutta,15,28.2606336,0.0409,ecto
+DO,Salmo trutta,15,23.6529216,0.0323,ecto
+DO,Sardinops sagax (formaly S. caerulea),25,29.46000003,0.0687,ecto
+DO,Scomber japonicus,19.5,45.591,0.273,ecto
+DO,Scomber japonicus,19.5,45.591,0.273,ecto
+DO,Scomber japonicus,24,21.80714288,0.0973,ecto
+DO,Scomberesocidae sp.,15.9,0.004242857,6.68E-06,ecto
+DO,Scomberoides lysan,30,0.587,0.000565,ecto
+DO,Scomberomorus queenslandicus,29,1.258285714,0.000734,ecto
+DO,Scopelengys tristis,5,0.64,0.0498,ecto
+DO,Scopelogadus mizolepis bispinosus,5,0.071428571,0.0036,ecto
+DO,Sebastolobus altivelis,5.7,0.078428571,0.0018,ecto
+DO,Selaroides leptolepis,29,1.851428573,0.001786,ecto
+DO,Seriola lalandi,32.5,108.0184831,0.206,ecto
+DO,Seriola lalandi,10,24.1014298,0.206,ecto
+DO,Siganus sp.,29,0.29,0.000352,ecto
+DO,Solea solea,15.5,14.467,0.115,ecto
+DO,Solea solea,12,0.00303981,0.00000096,ecto
+DO,Solea solea,12,0.00271983,0.00000571,ecto
+DO,Somniosus microcephalus,3.8,1799.335755,126,ecto
+DO,Somniosus microcephalus,4.9,1125.289223,52.4,ecto
+DO,Somniosus pacificus,7.15,1588.6,84.5,ecto
+DO,Somniosus pacificus,8.15,1529.45,84.5,ecto
+DO,Somniosus pacificus,6.85,1385.8,84.5,ecto
+DO,Somniosus pacificus,7.7,864,40,ecto
+DO,Somniosus pacificus,7.05,776,40,ecto
+DO,Somniosus pacificus,8,756,40,ecto
+DO,Somniosus pacificus,7.15,524,40,ecto
+DO,Sparus aurata,20,80.988,0.397,ecto
+DO,Sparus aurata,16,38.112,0.397,ecto
+DO,Sparus aurata,12,28.584,0.397,ecto
+DO,Sphyraena sp.,29,0.131,0.000126,ecto
+DO,Sphyrna lewini,32,284,0.7,ecto
+DO,Sphyrna tiburo,25,787.5288001,4.323162,ecto
+DO,Sphyrna tiburo,25,728.6204008,4.651777696,ecto
+DO,Sphyrna tiburo,25,576.4800998,1.481497599,ecto
+DO,Sphyrna tiburo,25,567.3600497,1.4637676,ecto
+DO,Sphyrna tiburo,25,560.9456002,2.551297703,ecto
+DO,Sphyrna tiburo,25,553.1613999,1.475380299,ecto
+DO,Sphyrna tiburo,25,545.7366002,2.551142002,ecto
+DO,Sphyrna tiburo,25,512.2749599,2.556678798,ecto
+DO,Sphyrna tiburo,25,472.0143999,1.580370499,ecto
+DO,Sphyrna tiburo,25,455.7914404,1.580204699,ecto
+DO,Sphyrna tiburo,25,453.4685403,2.5501986,ecto
+DO,Sphyrna tiburo,25,359.5534696,1.297033499,ecto
+DO,Sphyrna tiburo,25,357.5631701,1.173556399,ecto
+DO,Sphyrna tiburo,25,350.4298397,1.2910614,ecto
+DO,Sphyrna tiburo,25,343.3966697,1.079349299,ecto
+DO,Sphyrna tiburo,25,338.8277298,2.766545301,ecto
+DO,Sphyrna tiburo,25,336.2687403,1.179217599,ecto
+DO,Sphyrna tiburo,25,333.2573196,1.079245601,ecto
+DO,Sphyrna tiburo,25,324.1301297,1.085031199,ecto
+DO,Sphyrna tiburo,25,309.8313298,1.4258609,ecto
+DO,Sphyrna tiburo,25,260.2129001,1.2137133,ecto
+DO,Sphyrna tiburo,25,252.1407498,1.084295,ecto
+DO,Sphyrna tiburo,25,252.09962,1.219509099,ecto
+DO,Sphyrna tiburo,25,242.9742101,1.219415901,ecto
+DO,Sphyrna tiburo,25,238.9345701,1.1664644,ecto
+DO,Sphyrna tiburo,25,235.9231602,1.0664924,ecto
+DO,Sphyrna tiburo,25,234.8627301,1.2193329,ecto
+DO,Sphyrna tiburo,25,229.8091403,1.166371201,ecto
+DO,Sphyrna tiburo,25,227.8116801,1.0664096,ecto
+DO,Sphyrna tiburo,25,216.6565998,1.0721743,ecto
+DO,Sphyrna tiburo,25,216.62799,1.166236399,ecto
+DO,Sphyrna tiburo,25,214.6931198,0.860514041,ecto
+DO,Sphyrna tiburo,25,205.5659199,0.8662996,ecto
+DO,Sphyrna tiburo,25,172.0935399,0.9071096,ecto
+DO,Sphyrna tiburo,25,162.9681202,0.9070163,ecto
+DO,Sphyrna tiburo,25,58.76888296,0.12993665,ecto
+DO,Sphyrna tiburo,25,48.62416999,0.1474696,ecto
+DO,Sphyrna tiburo,25,41.53020004,0.13563927,ecto
+DO,Sphyrna tiburo,25,30.37870601,0.12964633,ecto
+DO,Stegostoma tigrinum,27.4,7941.815234,47.7,ecto
+DO,Stegostoma tigrinum,27.4,6995.140985,36.00000002,ecto
+DO,Stegostoma tigrinum,27.4,4575.998306,18.70000002,ecto
+DO,Stegostoma tigrinum,27.4,4223.998439,22.00000001,ecto
+DO,Stegostoma tigrinum,27.4,3081.794778,16.00000001,ecto
+DO,Stegostoma tigrinum,27.4,1271.11064,3.800000003,ecto
+DO,Stegostoma tigrinum,27.4,1049.787847,4.399999995,ecto
+DO,Stenobrachius leucopsarus,10,0.44,0.0044,ecto
+DO,Stomias atriventer,5,0.53,0.02185,ecto
+DO,Stomias danae,5,0.574285714,0.0138,ecto
+DO,Tarletonbeania crenularis,13,0.371428571,0.0014,ecto
+DO,Tautogolabrus adspersus,15,1.156870588,0.006455382,ecto
+DO,Tautogolabrus adspersus,15,0.941514706,0.005805735,ecto
+DO,Tautogolabrus adspersus,15,0.845480882,0.004809574,ecto
+DO,Tautogolabrus adspersus,15,0.578772059,0.002835765,ecto
+DO,Tautogolabrus adspersus,15,0.388227941,0.001629426,ecto
+DO,Terapon sp.,28,0.029428571,2.89E-05,ecto
+DO,Thunnus alalunga,17,3182.142859,10.076,endo
+DO,Thunnus albacares,25,1530.551428,2.170000001,endo
+DO,Thunnus albacares,25,1065.021429,1.1,endo
+DO,Thunnus maccoyii,19,9016,19.6,endo
+DO,Thunnus maccoyii,16.9,7461.3,20.9,endo
+DO,Thunnus maccoyii,20.2,4514.4,9.9,endo
+DO,Thunnus maccoyii,20.2,4514.4,9.9,endo
+DO,Thunnus maccoyii,18.4,4035.6,11.4,endo
+DO,Thunnus maccoyii,19.4,3763,10.6,endo
+DO,Thunnus maccoyii,19.2,3660,10,endo
+DO,Thunnus maccoyii,19.9,2820,9.4,endo
+DO,Thunnus orientalis,20,2222,11,endo
+DO,Thunnus orientalis,20,1998.2,9.7,endo
+DO,Thunnus orientalis,20,1922.4,10.8,endo
+DO,Thunnus orientalis,20,1806,10.5,endo
+DO,Thunnus orientalis,20,1722,10.5,endo
+DO,Thunnus orientalis,20,1653.6,10.6,endo
+DO,Thunnus orientalis,20,1403.9,10.1,endo
+DO,Thunnus thynnus,26,0.137028235,0.0000101,endo
+DO,Thunnys maccoyyi,17.5,5734,18.8,endo
+DO,Trachurus capensis ,18,2.484166667,0.01,ecto
+DO,Trachurus capensis ,18,0.418208333,0.001,ecto
+DO,Trachurus capensis ,18,0.070416667,0.0001,ecto
+DO,Trachurus capensis ,18,0.011833333,0.00001,ecto
+DO,Trachurus capensis ,18,0.002,0.000001,ecto
+DO,Trachurus trachurus,13,1.02,0.0041,ecto
+DO,Trematomus hansoni,0,20.9970982,0.25246,ecto
+DO,Triphoturus mexicanus,10,0.890000001,0.0093,ecto
+DO,Upeneus tragula,29,0.327142857,0.000284,ecto
+T0,Cetorhinus maximus,11.6,138906.5261,2307.002645,endo
+T0,Cetorhinus maximus,11.8,25638.12891,1113.646442,endo
+T0,Cetorhinus maximus,11.25,94778.77937,3452.898183,endo
+T0,Cetorhinus maximus,12.2,199650.6985,835.1056553,endo
+T0,Cetorhinus maximus,15.2,88664.01941,3452.898183,endo
+T0,Cetorhinus maximus,11.1,67930.75419,2841.430429,endo
+T0,Cetorhinus maximus,12.3,69453.26305,2307.002645,endo
+T0,Sphyrna lewini,26,5903.021785,100,ecto
+T0,Sphyrna lewini,26,20011.24385,40,ecto
+T0,Sphyrna lewini,26,4604.356992,60,ecto
+T0,Rhincodon typus,25,67737.17498,1500,ecto
+T0,Rhincodon typus,25,9208.713985,800,ecto
+T0,Rhincodon typus,27.5,45335.20731,1600,ecto
+T0,Hexanchus griseus,10,9841.813071,247,ecto
+T0,Hexanchus griseus,10,8008.039353,408,ecto
+T0,Hexanchus griseus,10,7884.961349,195,ecto
+T0,Hexanchus griseus,10,6001.8974,166,ecto
+T0,Hexanchus griseus,10,6526.676037,234,ecto
+T0,Xiphias gladius,13,9812.297962,109,endo
+T0,Xiphias gladius,13,4565.987351,91,endo
+T0,Xiphias gladius,13,13512.01687,109,endo
+T0,Xiphias gladius,13,5247.786367,127,endo
+T0,Xiphias gladius,13,7024.595924,136,endo
+T0,Thunnus albacares,26,1221.925509,1.38,endo
+T0,Thunnus albacares,26,1564.728742,1.89,endo
+T0,Thunnus albacares,26,1225.392059,1.833,endo
+T0,Thunnus albacares,26,1644.81799,1.72,endo
+T0,Thunnus albacares,26,2311.962755,2.678,endo
+T0,Thunnus albacares,26,2307.734715,1.855,endo
+T0,Thunnus albacares,26,1383.255095,2.14,endo
+T0,Thunnus albacares,26,863.0513001,1.71,endo
+T0,Thunnus albacares,26,4592.8461,2.6,endo
+T0,Thunnus albacares,26,952.0526353,1.667,endo
+T0,Thunnus albacares,26,1276.04884,1.525,endo
+T0,Thunnus albacares,26,1510.29993,1.648,endo
+T0,Thunnus albacares,26,1255.926915,1.44,endo
+T0,Thunnus albacares,26,2482.833099,1.635,endo
+T0,Thunnus orientalis,27,22218.55235,50.18571429,endo
+T0,Coryphaena hippurus,24.4,641.9536191,5,ecto
+T0,Coryphaena hippurus,26.7,1381.307098,8,ecto
+T0,Thunnus thynnus,18,95924.10401,250,endo
+T0,Thunnus thynnus,23,30990.86437,250,endo
+T0,Carcharodon carcharius,19,88795.0377,943,endo
