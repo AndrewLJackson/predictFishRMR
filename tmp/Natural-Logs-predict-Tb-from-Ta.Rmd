@@ -53,8 +53,8 @@ $$RMR = m^\alpha10^{\beta T_m}10^{\gamma}10^{\phi}$$
 
 Heat production via metabolism is then calculated as
 
-$$\dot{T}_0 = \frac{RMR}{M*10^{\omega}}$$
-where $\omega = 5.945$ (CHECK REFERENCE).
+$$\dot{T}_0 = \frac{RMR}{M*\omega}$$
+where $\omega = 10^5.945$ (CHECK REFERENCE).
 
 The difference in temperature between the fish ($T_m$ for body) and the ambient water ($T_a$ for ambient) is then given by 
 
@@ -66,7 +66,7 @@ The goal is to estimate the body temperature of a fish $T_m$ in a body of water 
 The predicted water temperature as function of body mass is then given as body temperature minus the temperature difference $\Delta T$ which is given by $RMR/k$ where $k$ is the rate of heat loss.
 
 
-$$T_a = T_m - \frac{10^{(\alpha\log_{10}(m) + \beta T_m + \gamma + \psi)}}{m*10^w*k}$$
+$$T_a = T_m - \frac{10^{(\alpha\log_{10}(m) + \beta T_m + \gamma + \psi)}}{m*\omega*k}$$
 where:
 
 - $T_a$ is ambient water temperature
@@ -82,10 +82,11 @@ where:
 
 The symobolic solver available at [wolfram](https://www.wolframalpha.com/input?i2d=true&i=solve+for+B%5C%2844%29+A+%3D+B+-+%5C%2840%29Divide%5BPower%5B10%2C%5C%2840%29α*Log10%5Bm%5D%2Bβ*B%2Bγ%2Bω%5C%2841%29%5D%2Cm*Power%5B10%2Cψ%5D*k%5D%5C%2841%29++) yields the following solution where we introduce $B = T_m$ and $A = T_a$ for clarity for the solver.
 
-`solve for B, A = B - (Divide[Power[10,\(40)α*Log10[m]+β*B+γ+ψ\(41)],m*Power[10,ω]*k])`
+Natural log form
 
+`solve for B, A = B - (Divide[Exp[α*Ln[m]+β*B+γ],m*ω*k])`
 
-$$T_m = T_a - W_n \left( -\frac{e^{(\beta T_a + \gamma - \omega)}(m^{\alpha - 1})\beta}{k}\right)\frac{1}{\beta} $$
+$$T_m = T_a - W_n \left (-\frac{e^{(\beta T_a + \gamma(S))}(m^{\alpha - 1})\beta}{\omega k}\right) \frac{1}{\beta} $$
 
 ## Define parameters and functions for this model
 
