@@ -45,7 +45,7 @@ K <- kfun(m = mm)
 
 # load the fitted regression model and extract the parameters
 data("fittedModelRMR")
-pars <- brms::fixef(fittedModelRMR)[,1]
+pars <- fittedModelRMR$fixef[,1]
 
 # loop over the sequence of water temperatures in the vector Ta
 # Estimate the body temperature at thermal equilibrium and take only the 
