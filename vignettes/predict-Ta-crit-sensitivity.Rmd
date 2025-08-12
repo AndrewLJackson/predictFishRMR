@@ -21,7 +21,7 @@ library(predictFishRMR)
 library(tidyverse)
 
 # for extracting the coefficients of the brms regression model
-# library(brms)
+library(brms)
 
 ```
 
@@ -41,7 +41,7 @@ m_range <- seq(100, 10000, length.out = 100)
 # 3 = beta the coefficient of Body temperature
 # 4 = the effect of mesothermy (psi)
 data("fittedModelRMR")
-pars <- fittedModelRMR$fixef[,1]
+pars <- brms::fixef(fittedModelRMR)[,1]
 
 # calculate the mean predicted Ta_crit for the mass vector
 Ta_crit_meso <- maxAmbientTemp(m_range, meso = TRUE, pars, preK = 1)

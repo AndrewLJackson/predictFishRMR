@@ -24,12 +24,10 @@
 #'
 #' @usage data(fittedModelRMR)
 #'
-#' @format A list containing two matrix arrays. $fixef contains a summary of the
-#'   fixed effects and $ranef the random effects by species. These have been
-#'   obtained by using the brms pacakge to extract these from a fitted model.
-#'   The actual brms model is several tens of Mbs and so we elected to only
-#'   provide the estimated coefficients. In subsequent analyses, only the means
-#'   of the fixed effect coefficients are used.
+#' @format An object of class "`brms`" containing the full model fit for the RMR
+#'   regression by mass, temperature and species. This is a large file but is
+#'   used in a vignette to detail the analysis of model convergence and
+#'   predictive power.
 #'
 #' @keywords datasets
 #' @author Andrew Jackson
