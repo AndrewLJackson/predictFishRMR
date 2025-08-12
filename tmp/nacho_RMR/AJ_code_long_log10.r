@@ -86,8 +86,8 @@ rmr_data <- rmr_data[complete.cases(rmr_data),]
 
 ## Andrew code added 11 Aug 2025
 # calculate natural log Ln(M) and Ln(RMR)
-rmr_data$logM <- log(rmr_data$mass.kg)
-rmr_data$logRMR <- log(rmr_data$RMR.mg.O2.h)
+rmr_data$logM <- log10(rmr_data$mass.kg)
+rmr_data$logRMR <- log10(rmr_data$RMR.mg.O2.h)
 
 # --- check for potential cofounding effects between
 
@@ -155,11 +155,9 @@ summary(mod)
 # par(oma = c(4,4,4,4))
 # plot(mod)
 # pp_check(mod)
-
-# get bayesian p-value
+# 
+# # get bayesian p-value
 # p_map(mod)
 
-natural_mod <- mod
-save(natural_mod, file = "tmp/nacho_RMR/natural_model.rda", compress = "xz")
-
-
+base10_mod <- mod
+save(base10_mod, file = "tmp/nacho_RMR/base10_model.rda", compress = "xz")
