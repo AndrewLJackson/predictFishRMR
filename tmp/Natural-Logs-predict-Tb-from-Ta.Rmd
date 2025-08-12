@@ -75,7 +75,7 @@ where:
 - $\beta$ is the coefficient of body temperature 
 - $\gamma$ is the intercept
 - $\psi$ is the effect of mesothermy
-- $\omega$ is the scaling of the coefficient of mass that converts $RMR$ to $\dot{T}_0$
+- $\omega$ is the the coefficient of mass that converts $RMR$ to $\dot{T}_0$, currently $\omega = 10^{5.945}$
 - $k$ is the rate of heat transfer and is estimated via $k = 0.00161 * m^{-0.62}$
 
 
@@ -98,9 +98,10 @@ Define the parameters of the model taken from the PGLS regression model.
 # 2 = beta the coefficient of Body temperature
 # 3 = Intercept (gamma)
 # 4 = the effect of mesothermy (psi)
-# 5 = omega, the exponent of the multiplier of mass for converting RMR to T0
-# pars <- c(0.8161589, 0.0505157, 0.8700325, 0.8358592, 5.945)
-pars <- c(0.8700325, 0.8161589, 0.0505157 , 0.8358592, 5.945)
+# 5 = omega, the coefficient of mass for converting RMR to T0
+# pars <- c(0.8161589, 0.0505157, 0.8700325, 0.8358592, 10^5.945)
+# pars <- c(0.8700325, 0.8161589, 0.0505157 , 0.8358592, 10^5.945)
+pars <- c(2.9468, 0.8271, 0.0805, 1.2333)
 ```
 
 
@@ -200,6 +201,8 @@ The inflection point of the curve occurs in the Lambert function $W_n(x)$ when $
 
 x_max <- (0.43429 * (log((0.43429 * kk * m^(1 - aa)) / (bb)) - 
                           (2.3026 * (gg + pp -om)) - 1 )) / bb
+                          
+x_max <- (-gg + log(kk*om*m^(1-aa) /  bb) - 1) / bb
                           
 
 $$T_a^* = \frac{0.43429(\log(\frac{0.43429 k m^{1-\alpha}}{\beta}) - (2.3026 * (\gamma + \psi - \omega)) - 1)}{\beta}$$

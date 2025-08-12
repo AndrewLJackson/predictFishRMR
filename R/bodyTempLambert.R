@@ -7,6 +7,7 @@
 #' @param meso a switch parameter that is either TRUE for mesotherm (or regional
 #'   endotherm) or FALSE for ectotherm
 #' @param pars the coefficients of the fitted regression model
+#' @param omega the coefficient of mass to convert metabolic rate into temperature. Defaults to 10^0.5945
 #'
 #' @returns body temperature in C
 #' @export
@@ -22,8 +23,11 @@ function(x, m, k = NULL,meso, pars){
   gg <- pars[1] # gamma, the intercept
   aa <- pars[2] # alpha, the coefficient of log10(mass) in RMR
   bb <- pars[3] # beta, the coefficient of body temperature
-  ifelse(meso, pp <- pars[4],  pp <- 0) # psi, the effect of mesothermy
+  ifelse(meso, pp <- pars[4],  pp <- 0) # psi, the effect of mesothermy on the intercept
   # om <- pars[5] # omega, the exponent of the multiplier of mass to convert RMR to T0
+  
+  # use the default package supplied value for omega if omitted
+  # if(is.null(omega)){omega <- omega}
   om <- omega
   # aa <- pars[1] # alpha, the coefficient of log10(mass) in RMR
   # bb <- pars[2] # beta, the coefficient of body temperature
@@ -34,9 +38,9 @@ function(x, m, k = NULL,meso, pars){
   
   # evaluate the two arms of the Lambert function that gives Real solutions
   y0 <- x - 
-    (lamW::lambertW0( - ((10^(bb*x+gg+pp-om)) * (m^(aa-1)) * bb * log(10)) / kk )) / (bb* log(10))
+    (lamW::lambertW0( - ((exp(bb*x+gg+pp)) * (m^(aa-1)) * bb / (om*kk) )) / bb)
   y1 <- x - 
-    (lamW::lambertWm1(- ((10^(bb*x+gg+pp-om)) * (m^(aa-1)) * bb * log(10)) / kk )) / (bb* log(10))
+    (lamW::lambertWm1(- ((exp(bb*x+gg+pp)) * (m^(aa-1)) * bb / (om*kk) )) / bb)
   
   
   # lmbd <- gg + pp -om
