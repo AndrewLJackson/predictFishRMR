@@ -15,7 +15,14 @@ vignette: >
 ## Setup
 
 ```{r}
-library(predictFishRMR)
+# library(predictFishRMR)
+
+library(tidyverse)
+
+r_files <- list.files("../r", pattern = ".R", full.names = T)
+for (i in 1:length(r_files)){source(r_files[i])}
+omega <- 10^5.954
+
 
 # required for access to the Lambert function
 library(lamW)
@@ -66,10 +73,11 @@ The goal is to estimate the body temperature of a fish $T_m$ in a body of water 
 The predicted water temperature as function of body mass is then given as body temperature minus the temperature difference $\Delta T$ which is given by $RMR/k$ where $k$ is the rate of heat loss.
 
 
-$$T_a = T_m - \frac{10^{(\alpha\log_{10}(m) + \beta T_m + \gamma + \psi)}}{m*\omega*k}$$
+$$T_a = T_m - \frac{e^{(\alpha\log(m) + \beta T_m + \gamma + \psi)}}{m*\omega*k}$$
 where:
 
 - $T_a$ is ambient water temperature
+
 - $T_m$ is muscle (body) temperature
 - $\alpha$ is the coefficient of log10(mass)
 - $\beta$ is the coefficient of body temperature 

@@ -34,7 +34,7 @@ function(m, meso, pars, preK = 1){
   # x_max <- (0.434294481903252 * 
   #             (log((0.434294481903252 * kk * m^(1 - aa)) / (bb)) - 
   #                         (2.30258509299405 * (gg + pp -omega)) - 1 )) / bb
-  x_max <- (-gg + log(kk*om*m^(1-aa) /  bb) - 1) / bb
+  x_max <- (-gg - pp + log(kk*om*m^(1-aa) /  bb) - 1) / bb
   
   return(x_max)
   
