@@ -76,7 +76,9 @@ gg_crit <- ggplot(data = dd_crit,
               linetype = 2, 
               show.legend = FALSE) + 
   ylab("Critical water temperature (C)") + 
-  xlab("Mass (kg)")
+  xlab("Mass (kg)") + 
+  ylim(c(0,60)) + 
+  xlim(c(0, 2500))
 
 # print to screen
 print(gg_crit)
