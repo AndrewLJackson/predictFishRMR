@@ -24,10 +24,10 @@
 #'
 #' @usage data(fittedModelRMR)
 #'
-#' @format An object of class "`brms`" containing the full model fit for the RMR
-#'   regression by mass, temperature and species. This is a large file but is
-#'   used in a vignette to detail the analysis of model convergence and
-#'   predictive power.
+#' @format A list object obcontaining the fixed effects estimates derived from
+#'   the brms model fit of RMR by mass, temperature and species. The entire
+#'   model object is not provided as it is tens of Mb in size and is not
+#'   strictly required.
 #'
 #' @keywords datasets
 #' @author Andrew Jackson
