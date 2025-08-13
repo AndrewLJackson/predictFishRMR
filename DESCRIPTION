@@ -1,8 +1,8 @@
 Package: predictFishRMR
 Type: Package
 Title: Estimates the resting metabolic rates of fish based on allometric scaling equations and water temperatures
-Version: 0.1.2.3
-Date: 2025-08-12
+Version: 0.1.2.4
+Date: 2025-08-13
 Author: Andrew L Jackson
 Maintainer: Andrew Jackson<jacksoan@tcd.ie>
 Description: Observed relationships between body mass and cooling coefficients, coupled with a seperate relationship between body mass and temperature elevations above ambient water temperature are used to provide predictions of resting metabolic rates of fish using only body mass and whether they are mesotherms (or regional endotherms) or ectotherms. Additional functions are provided to estimate predicted maximum ambient water temperature that permits thermal equilibrium. 

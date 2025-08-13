@@ -1,0 +1,85 @@
+---
+title: "The relationship between critical ambient water temperature, body mass and thermal strategy"
+author: "Andrew L Jackson"
+output: html_notebook
+---
+
+
+## Setup
+
+```{r}
+# load the predictFishRMR package 
+library(predictFishRMR)
+
+# for plotting and tibble manipulation
+library(tidyverse)
+
+# for extracting the coefficients of the brms regression model
+# library(brms)
+
+```
+
+## Sensitivity of our estimate on K
+
+In this example we explore how our estimate of critical ambient temperature, above which we predict a fish to be unable to maintain long term thermal equilibrium. We generate estimates over a range of body masses for both thermal strategies of mesothermy and ectothermy. We use the mean K as predicted according to Nakamura's approach alongside a sensitivity whereby this value is assumed to vary by a factor of 2 in both directions (i.e. K is taken as both double and half its predicted value), thereby providing a 4-fold range. 
+
+```{r, fig.width=10}
+
+# generate a sequence of mass for the x-axis of the plots
+m_range <- seq(100, 10000, length.out = 100)
+
+# load and retrieve the parameters for the RMR regression
+# order of the parameters is:
+# 1 = Intercept (gamma)
+# 2 = alpha the coefficient of log10(mass)
+# 3 = beta the coefficient of Body temperature
+# 4 = the effect of mesothermy (psi)
+data("fittedModelRMR")
+pars <- fittedModelRMR$fixef
+
+# calculate the mean predicted Ta_crit for the mass vector
+Ta_crit_meso <- maxAmbientTemp(m_range, meso = TRUE, pars, preK = 1)
+Ta_crit_ecto <- maxAmbientTemp(m_range, meso = FALSE, pars, preK = 1)
+
+# calculate Ta_crit using 2*K in the calculations
+Ta_crit_meso_high <- maxAmbientTemp(m_range, meso = TRUE, pars, preK = 2)
+Ta_crit_ecto_high <- maxAmbientTemp(m_range, meso = FALSE, pars, preK = 2)
+
+# calculate Ta_crit using K/2 in the calculations
+Ta_crit_meso_low <- maxAmbientTemp(m_range, meso = TRUE, pars, preK = 0.5)
+Ta_crit_ecto_low <- maxAmbientTemp(m_range, meso = FALSE, pars, preK = 0.5)
+
+# assemble the data.frame (tibble) for plotting
+dd_crit <- tibble(mass = rep(m_range, 2), 
+                      Ta_crit = c(Ta_crit_meso,   Ta_crit_ecto),
+                      low = c(Ta_crit_meso_low,   Ta_crit_ecto_low), 
+                      high = c(Ta_crit_meso_high, Ta_crit_ecto_high),
+                      'Thermal Strategy' = c(rep("mesotherm", length(m_range)), 
+                               rep("ectotherm", length(m_range))))
+
+
+# plot the curves including the sensitivity as a ribbon plot
+gg_crit <- ggplot(data = dd_crit, 
+                  mapping = aes(x = mass, y = Ta_crit, 
+                                color = `Thermal Strategy`)) + 
+  geom_path() + 
+  scale_color_viridis_d(option = "D", begin = 0.2, end = 0.8) + 
+  geom_ribbon(aes(ymin = low, 
+                  ymax = high), 
+              alpha = 0.1, 
+              linetype = 2, 
+              show.legend = FALSE) + 
+  ylab("Critical water temperature (C)") + 
+  xlab("Mass (kg)") + 
+  ylim(c(0,60)) + 
+  xlim(c(0, 2500))
+
+# print to screen
+print(gg_crit)
+
+```
+
+**Figure X.** The predicted maximum water temperature in which a fish can maintain heat balance as a function of body mass and physiological type. Note that these are analytical approximations. The dotted lines represent a sensitivity analysis whereby the value of K used in the estimates was both doubled and halved.
+
+
+

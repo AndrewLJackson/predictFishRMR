@@ -4,6 +4,8 @@
 #' @param m body mass in g
 #' @param k cooling coefficient k. Defaults to NULL which causes it to be
 #'   estimated from m via allometric scaling kfun()
+#' @param kpars a vector contain "a" the prefactor of the exponential scaling
+#'   equation and "b" the scaling exponent. If k is provided, kpars is ignored.
 #' @param meso a switch parameter that is either TRUE for mesotherm (or regional
 #'   endotherm) or FALSE for ectotherm
 #' @param pars the coefficients of the fitted regression model
@@ -13,11 +15,16 @@
 #' @export
 #'
 bodyTempLambert <-
-function(x, m, k = NULL,meso, pars){
+function(x, m, kpars = NULL,meso, pars){
   
   # calculate the cooling rate k from allometric relationship with mass if not
-  # provided
-  kk <- ifelse(is.null(k), kk <- kfun(m), k)
+  # provided. The coefficients used to estimate k from kfum() can be 
+  # set using values provided to kpars, else the default values are used. 
+  kk <- ifelse(is.null(k), 
+               ifelse(is.null(kpars), 
+                      kfun(m), 
+                      kfun(m, kpars)), 
+               k)
   
   # extract the parameters to pass onwards
   gg <- pars[1] # gamma, the intercept

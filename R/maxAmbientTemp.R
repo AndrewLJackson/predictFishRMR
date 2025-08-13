@@ -6,16 +6,24 @@
 #' @param pars the coefficients of the fitted regression model
 #' @param preK is a prefactor that is applied to the estimated cooling
 #'   coefficient K that allows uncertainty in this parameter to be explored
+#' @param kpars a vector contain "a" the prefactor of the exponential scaling
+#'   equation and "b" the scaling exponent. If k is provided, kpars is ignored.
 #' @param omega the coefficient of mass to convert metabolic rate into temperature. Defaults to 10^0.5945
 #'
 #' @returns a vector of length m with corresponding max water temperatures in C
 #' @export
 #' 
 maxAmbientTemp <-
-function(m, meso, pars, preK = 1){
+function(m, meso, pars, preK = 1, kpars = NULL){
   
   # calculate the cooling rate k from allometric relationship with mass
-  kk <- kfun(m) * preK
+  # using provided scaling parameters if supplied. 
+  kk <- ifelse(is.null(kpars), 
+         kfun(m) * preK, 
+         kfun(m, kpars) * preK)
+  
+  # kk <- kfun(m) * preK
+  
   
   # extract the parameters to pass onwards
   gg <- pars[1] # gamma, the intercept
