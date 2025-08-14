@@ -18,13 +18,16 @@
 
 #' Fitted RMR model.
 #'
-#' 
+#'
 #'
 #' @docType data
 #'
 #' @usage data(fittedModelRMR)
 #'
-#' @format An object of class `"brmsfit"`. 
+#' @format A list object obcontaining the fixed effects estimates derived from
+#'   the brms model fit of RMR by mass, temperature and species. The entire
+#'   model object is not provided as it is tens of Mb in size and is not
+#'   strictly required.
 #'
 #' @keywords datasets
 #' @author Andrew Jackson

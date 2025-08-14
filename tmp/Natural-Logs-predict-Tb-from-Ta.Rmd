@@ -17,6 +17,12 @@ vignette: >
 ```{r}
 library(predictFishRMR)
 
+
+# r_files <- list.files("../r", pattern = ".R", full.names = T)
+# for (i in 1:length(r_files)){source(r_files[i])}
+# omega <- 10^5.954
+
+
 # required for access to the Lambert function
 library(lamW)
 
@@ -46,10 +52,10 @@ Note that ideally I think we would parameterise this in natural logs rather than
 
 Just for noting, the following three equations are equivalent. 
 
-$$\log_{10}(RMR) = \alpha\log_{10}(m) + \beta T_m + \gamma + \phi$$
+$$\log_{10}(RMR) = \alpha\ln(m) + \beta T_m + \gamma(S)$$
 
-$$RMR = 10^{(\alpha\log_{10}(m) + \beta T_m + \gamma + \phi)}$$
-$$RMR = m^\alpha10^{\beta T_m}10^{\gamma}10^{\phi}$$
+$$RMR = e^{(\alpha\ln(m) + \beta T_m + \gamma(S))}$$
+$$RMR = m^\alpha e^{\beta T_m}e^{\gamma(S)}$$
 
 Heat production via metabolism is then calculated as
 
@@ -66,21 +72,21 @@ The goal is to estimate the body temperature of a fish $T_m$ in a body of water 
 The predicted water temperature as function of body mass is then given as body temperature minus the temperature difference $\Delta T$ which is given by $RMR/k$ where $k$ is the rate of heat loss.
 
 
-$$T_a = T_m - \frac{10^{(\alpha\log_{10}(m) + \beta T_m + \gamma + \psi)}}{m*\omega*k}$$
+$$T_a = T_m - \frac{e^{(\alpha\log(m) + \beta T_m + \gamma(S))}}{m*\omega*k}$$
 where:
 
 - $T_a$ is ambient water temperature
+
 - $T_m$ is muscle (body) temperature
 - $\alpha$ is the coefficient of log10(mass)
 - $\beta$ is the coefficient of body temperature 
-- $\gamma$ is the intercept
-- $\psi$ is the effect of mesothermy
-- $\omega$ is the scaling of the coefficient of mass that converts $RMR$ to $\dot{T}_0$
+- $\gamma(S)$ is the intercept which takes different values depending on the thermal strategy. In our models, this defines either ecotherms or mesotherms. In the statistical model, a single intercept is fitted with an additional additive ceofficient for mesotherms such that $\gamma(\text{mesotherm}) = \gamma(\text{ectotherm}) + \psi$
+- $\omega$ is the the coefficient of mass that converts $RMR$ to $\dot{T}_0$, currently $\omega = 10^{5.945}$
 - $k$ is the rate of heat transfer and is estimated via $k = 0.00161 * m^{-0.62}$
 
 
 
-The symobolic solver available at [wolfram](https://www.wolframalpha.com/input?i2d=true&i=solve+for+B%5C%2844%29+A+%3D+B+-+%5C%2840%29Divide%5BPower%5B10%2C%5C%2840%29α*Log10%5Bm%5D%2Bβ*B%2Bγ%2Bω%5C%2841%29%5D%2Cm*Power%5B10%2Cψ%5D*k%5D%5C%2841%29++) yields the following solution where we introduce $B = T_m$ and $A = T_a$ for clarity for the solver.
+The symobolic solver available at [wolfram](https://www.wolframalpha.com/input?i2d=true&i=solve+for+B%5C%2844%29+A+%3D+B+-+%5C%2840%29Divide%5BPower%5B10%2C%5C%2840%29α*Log10%5Bm%5D%2Bβ*B%2Bγ%2Bω%5C%2841%29%5D%2Cm*Power%5B10%2Cψ%5D*k%5D%5C%2841%29++) yields the following solution where we introduce $B = T_m$ (B for body) and $A = T_a$ (A for ambient) for clarity for the solver.
 
 Natural log form
 
@@ -90,7 +96,7 @@ $$T_m = T_a - W_n \left (-\frac{e^{(\beta T_a + \gamma(S))}(m^{\alpha - 1})\beta
 
 ## Define parameters and functions for this model
 
-Define the parameters of the model taken from the PGLS regression model. 
+Define the parameters of the model taken from the PGLS regression model. Note that here is where $\gamma(S)$ has to become a general intercept $\gamma$ which references ectotherms with an additive term applied for when the thermal strategy is endothermy $\gamma + \psi$
 
 ```{r}
 # order of the parameters is:
@@ -98,9 +104,12 @@ Define the parameters of the model taken from the PGLS regression model.
 # 2 = beta the coefficient of Body temperature
 # 3 = Intercept (gamma)
 # 4 = the effect of mesothermy (psi)
-# 5 = omega, the exponent of the multiplier of mass for converting RMR to T0
-# pars <- c(0.8161589, 0.0505157, 0.8700325, 0.8358592, 5.945)
-pars <- c(0.8700325, 0.8161589, 0.0505157 , 0.8358592, 5.945)
+# 5 = omega, the coefficient of mass for converting RMR to T0
+# pars <- c(0.8161589, 0.0505157, 0.8700325, 0.8358592, 10^5.945)
+# pars <- c(0.8700325, 0.8161589, 0.0505157 , 0.8358592, 10^5.945)
+# pars <- c(2.9468, 0.8271, 0.0805, 1.2333)
+data("fittedModelRMR")
+pars <- fittedModelRMR$fixef
 ```
 
 
@@ -200,6 +209,8 @@ The inflection point of the curve occurs in the Lambert function $W_n(x)$ when $
 
 x_max <- (0.43429 * (log((0.43429 * kk * m^(1 - aa)) / (bb)) - 
                           (2.3026 * (gg + pp -om)) - 1 )) / bb
+                          
+x_max <- (-gg + log(kk*om*m^(1-aa) /  bb) - 1) / bb
                           
 
 $$T_a^* = \frac{0.43429(\log(\frac{0.43429 k m^{1-\alpha}}{\beta}) - (2.3026 * (\gamma + \psi - \omega)) - 1)}{\beta}$$

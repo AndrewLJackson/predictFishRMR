@@ -1,0 +1,641 @@
+# High fuel demands and overheating risk challenge mesothermic fishes in warming oceans
+
+# Nicholas L. Payne*, Edward P. Snelling, Ignacio Peralta-Maraver, Dave E. Cade, Taylor K. Chapple, 
+# Alex G. McInturf, Yuuki Y. Watanabe, David W. Sims, Nuno Queiroz, Ivo da Costa, Lara L. Sousa, 
+# Jeremy A. Goldbogen, Haley R. Dolton & Andrew L. Jackson
+
+# *email: paynen@tcd.ie
+
+# --- libraries
+library(phytools)        # pylogenetic analysis
+library(nlme)            # pgls analysis
+library(geiger)
+library(plyr)            # organise dataset
+library(yarrr)           # transparent color
+library(viridis)         # color palettes
+library(brms)            # fit baysian models
+library(parallel)        # run models in parallel
+library(rstan)           # run bayes
+library(bayestestR)      # Bayesian p-values
+library(geiger)          # covariance matrix
+library(raster)          # plot maps
+library(sp)
+library(maps)            # plot maps
+library(predictFishRMR)
+
+
+# SECTION 1: HOUSEKEEPING
+
+# --- open data
+rmr_data <- read.csv("MandT_indiv_whalefixed_raw.csv")
+#rmr_data <- read.csv("MandT_indiv_whalefixed_raw_CORE.csv")
+
+tree <- read.tree("fish_shark_combined.tre")
+
+# Compare species between dataset and phylogeny
+unique(rmr_data$spp)
+tree$tip.label
+
+tree$tip.label <- gsub("_", " ", tree$tip.label)
+
+tree$tip.label[tree$tip.label == "Pseudocaranx dentex -formaly Longirostrum delicatissimus"] <- "Pseudocaranx dentex (formaly Longirostrum delicatissimus) "
+tree$tip.label[tree$tip.label == "Ranzania laevis- Ostracion boops stage"] <- "Ranzania laevis, Ostracion boops stage"
+tree$tip.label[tree$tip.label == "Coregonus lavaretus -larvae"] <- "Coregonus lavaretus (larvae)"
+tree$tip.label[tree$tip.label == "Sardinops sagax -formaly S. caerulea"] <- "Sardinops sagax (formaly S. caerulea)"
+tree$tip.label[tree$tip.label == "Ophichthus gomesii- leptocephalus larvae"] <- "Ophichthus gomesii, leptocephalus larvae"
+tree$tip.label[tree$tip.label == "Paraconger caudilimbatus- leptocephalus larvae"] <- "Paraconger caudilimbatus, leptocephalus larvae"
+tree$tip.label[tree$tip.label == "Ariosoma balearicum- leptocephalus larvae"] <- "Ariosoma balearicum, leptocephalus larvae"
+tree$tip.label[tree$tip.label == "Gymnothorax saxicola- leptocephalus larvae"] <- "Gymnothorax saxicola, leptocephalus larvae"
+
+rmr_data$spp[rmr_data$spp == "Negaprion brevirostris\xa0"] <- "Negaprion brevirostris"
+rmr_data$spp[rmr_data$spp == "Mustelus antarcticus\xa0"] <- "Mustelus antarcticus"
+rmr_data$spp[rmr_data$spp == "A. fimbria"] <- "Anoplopoma fimbria"
+rmr_data$spp[rmr_data$spp == "Oncorhynchus\xa0tshawytscha"] <- "Oncorhynchus tshawytscha"
+rmr_data$spp[rmr_data$spp == "Trachurus capensis\xa0"] <- "Trachurus capensis"
+rmr_data$spp[rmr_data$spp == "Hypoatherina sp"] <- "Hypoatherina sp."
+rmr_data$spp[rmr_data$spp == "Monacanthidae sp"] <- "Monacanthidae"
+rmr_data$spp[rmr_data$spp == "Monacanthidae sp."] <- "Monacanthidae"
+rmr_data$spp[rmr_data$spp == "Ambassis sp"] <- "Ambassis sp."
+rmr_data$spp[rmr_data$spp == "Caulophrynidae sp."] <- "Caulophrynidae"
+rmr_data$spp[rmr_data$spp == "Scomberesocidae sp."] <- "Scomberesocidae"
+rmr_data$spp[rmr_data$spp == "Carcharodon carcharius"] <- "Carcharodon carcharias"
+rmr_data$spp[rmr_data$spp == "Thunnys maccoyyi"] <- "Thunnus maccoyii"
+
+# Especies en el dataset que faltan en el árbol
+missing_in_tree <- setdiff(unique(rmr_data$spp), tree$tip.label)
+missing_in_tree
+
+# Especies en el árbol que no están en el dataset
+extra_in_tree <- setdiff(tree$tip.label, unique(rmr_data$spp))
+extra_in_tree
+
+# Podar el árbol para eliminar especies extra
+tree <- drop.tip(tree, extra_in_tree)
+
+# Especies comunes entre ambos (dataset y árbol)
+common_species <- intersect(unique(rmr_data$spp), tree$tip.label)
+common_species
+
+# Check if all dataset species are present in phylogeny
+all_match <- all(sort(unique(rmr_data$spp)) %in% sort(tree$tip.label))
+all_match  # TRUE if all dataset species are included in the tree
+
+# --- housekeeping
+rmr_data$method <- factor(rmr_data$method)
+rmr_data$therm <- factor(rmr_data$therm)
+rmr_data <- rmr_data[complete.cases(rmr_data),]
+
+#rownames(rmr_data) <- rmr_data$spp
+#spp <- rownames(rmr_data)
+
+# --- check for potential cofounding effects between
+
+library(MatchIt)
+
+# calculate propensity scores considering method as the treatment and logM, T, therm as covariates:
+
+# fit a propensity score model using nearest neighbor matching
+ps_model <- matchit(method ~ logM, data = rmr_data, method = "nearest")
+summary(ps_model)
+
+# extract the matched dataset and fit the model again
+matched_data <- match.data(ps_model)
+mod_matched <- lm(logRMR ~ logM + T + therm + method, data = matched_data)
+summary(mod_matched) # method does not have sig. effect.
+
+# SECOND SECTION: BAYESIAN LINEAR MIXED MODEL 
+
+# construct covariance matrix of species (Hadfield & Nakagawa, 2010).
+A <- ape::vcv.phylo(compute.brlen(tree, method = "Grafen"))
+
+# adding species as a factor into our dataset
+rmr_data$spp_name <- factor(rmr_data$spp)
+
+# Many species include serveral masurements. Thus, we use a bayesian models.
+# General STAN specifications 
+rstan::rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+parallel::detectCores()
+
+# MODEL
+# We use a bayesian approach to study the relationship
+# across species (phylogeny) while taking into considration
+# intraspaecific variation and multiple observations for
+# several species.
+
+rmr_data$logM <- log(rmr_data$mass.kg)
+rmr_data$logRMR <- log(rmr_data$RMR.mg.O2.h)
+
+
+# set model priors
+priors = c(
+  prior(normal(0,10), "b"),
+  prior(normal(0,50), "Intercept"),
+  prior(student_t(3,0,20), "sd"),
+  prior(student_t(3,0,20), "sigma")
+)
+
+# run Bayesian model including phylogenetic tree
+set.seed(23); mod <- brm((logRMR)  ~ logM + T + therm # fixed coefficients
+  + (1 | gr(spp, cov = A)) + (1| spp_name), # random factors
+  family = gaussian(), 
+  data2 = list(A = A),
+  prior = priors,
+  sample_prior = TRUE, 
+  chains = 2, 
+  cores = 16, # cores to be used 8 in mac pro
+  iter = 3000, 
+  warmup = 500,
+  control = list(adapt_delta = 0.99, max_treedepth = 15), # Improve convergence
+  save_pars = save_pars(all = TRUE),
+  data = rmr_data)
+
+# get coefficients
+summary(mod) 
+coef_tab <- as.data.frame(summary(mod)$fixed)
+round(coef_tab, 4)
+
+
+# check model convergence 
+
+par(oma = c(4,4,4,4))
+plot(mod)
+pp_check(mod)
+
+# get bayesian p-value
+p_map(mod)
+
+pars <- brms::fixef(mod)[,1]
+
+# ---
+# assign color for the two states
+
+map_data <- ddply(rmr_data, c("spp", "therm"), summarise, logM = mean(logM))[,c(1,2)]
+row.names(map_data) <- map_data$spp
+
+#Vector with information of the caracter
+a <-  tree$tip.label[order(tree$tip.label)]
+b <-  map_data[map_data$spp %in% tree$tip.label, ]$therm
+
+info_caracter <- setNames(c(b), a)
+ancestor <- make.simmap(tree, info_caracter, model = "ER", nsim = 50)
+ecomorph <- as.factor(getStates(ancestor, "tips"))
+
+cols <- setNames(c("blue", "red"), levels(ecomorph))
+
+# coef mod
+
+
+coef_tab <- as.data.frame(summary(mod)$fixed)
+round(coef_tab, 4)
+
+summary(mod)
+coef <- c(2.9468, 0.8271, 0.0805, 1.2333)
+
+# --- Figure 1. 
+# A persistently higher energetic cost to fuel mesothermy in fishes. Left panel shows the phylogeny used in the regression of mass, 
+# body temperature and thermal strategy (red for mesotherms and blue for ectotherms) on fish routine metabolic rate, shown in right panel. 
+# Data with black outline indicate RMR estimated by our new heat production method, with all other data derived from respirometry. 
+
+quartz("Fig 1", 9, 4.2)
+par(mfrow = c(1, 2))
+
+plot(ancestor[[1]], colors = sapply(cols, make.transparent, alpha = 0.1), type = "fan", add = F, lwd = 4, ftype = "off", fsize = 0.6, offset = 0.5)
+for(i in 1:length(ancestor))
+  plot(ancestor[[i]], colors = sapply(cols, make.transparent, alpha = 0.1), type = "fan", add = T, lwd = 4, ftype = "off", fsize = 0.6, offset = 0.5)
+
+par(mar = c(5.1, 5.1, 2.1, 2.1))
+rmr_data$therm <- factor(rmr_data$therm)
+pt.cols <- setNames(c("blue", "red"), levels(rmr_data$therm))
+
+plot((logRMR - T * coef[3]) ~ logM, data = rmr_data, pch = c(21, 24)[as.numeric(rmr_data$method)], cex = c(0.9, 1.3)[as.numeric(rmr_data$method)], bg = pt.cols[rmr_data$therm], col = "white", lwd = 0.5, ylab = "", xlab = "", xaxt = "n", yaxt = "n")
+
+mtext(side = 2, expression("Routine metabolic rate (g O"[2]*" h"^-1*" )"), line = 3.5)
+
+axis(1, at = log(c(0.00001, 0.001, 0.1, 10, 1000)), labels = c("10 mg", "1 g", "100 g", "10 Kg", "1Ton"))
+axis(2, las = 1, at = log(c(0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000, 100000)), 
+  labels = c(expression("10"^-7*""), expression("10"^-6*""), expression("10"^-5*""), expression("10"^-4*""), 
+    expression("10"^-3*""), expression("10"^-2*""), expression("10"^-1*""), expression("1"), expression("10"), expression("10"^2*"")))    
+
+legend("bottomright", c("Respirometry", "Heat production", "", "Mesotherms", "Ectotherms"), 
+  pch = c(1, 2, NA, 21, 21), col = c("black", "black", NA, "red", "blue"), pt.bg = c(NA, NA, NA, "red",  "blue"), 
+  bty = "n", pt.cex = 1.2, cex = 0.8)
+
+# adding endotherms fit
+x = seq(-10, 8, length = 100)
+y = coef[1] + coef[4] + x * coef[2]
+lines(x, y, lwd = 5, col = "white"); lines(x, y, lwd = 2, col = "red")
+
+# adding ectotherm fit
+x = seq(-12, 8, length = 100)
+y = coef[1] + x * coef[2]
+lines(x, y, lwd = 5, col = "white"); lines(x, y, lwd = 2, col = "blue")
+
+mtext(side = 1, "Body weight", line = 3)
+
+points((logRMR - T * coef[3]) ~ logM, data = rmr_data, 
+  pch = c(NA, 24)[as.numeric(rmr_data$method)], cex = c(1, 1.3)[as.numeric(rmr_data$method)], 
+  bg = pt.cols[rmr_data$therm], col = "white")
+
+box()
+
+		
+		
+		
+		
+		# --- Figure 2
+		# Scaling of energy demand and heat balance limits in large-bodied fishes.
+		# (A) Routine metabolic rate RMR is 7-8 fold higher for mesotherms than ectotherms,
+		# and fluctuates widely for the mesotherms as body temperature varies.
+		# Plotted are RMR estimates for fish swimming in water ranging from 20-25°C,
+		# with body temperature estimated based on equation 10.
+		# (B) The empirically derived gigantothermy phenomenon in fish shows how bigger
+		# fish – particularly mesotherms – have elevated body temperature due to a scaling mismatch between heat production and loss.
+		# Shown is estimated Ta when Tm (body temperature) is 20°C.
+		# (C & D) Theoretical heat balance thresholds (Ta) arise from an inability
+		# of larger fish to balance heat production and loss in warm water.
+		# As fish mass increases, there is a threshold water temperature in which
+		# heat produced by metabolism will be balanced by heat loss to the water (y axis);
+		# above those Ta the fish will continue to heat unless they reduce heat production (e.g. swim slower),
+		# increase heat loss by adjusting convective cooling, or both.
+		# Larger fish have lower threshold temperatures,
+		# especially mesotherms given higher rates of heat production,
+		# theoretically restricting them to cooler climates unless they engage physiological
+		# or behavioural adjustments. Dashed line represents xy unity.
+
+
+
+
+n = 100
+m = size_range = seq(1,2000, length = n)
+pars <- brms::fixef(mod)[,1]
+
+
+## A meso - expected Ta and RMR
+meso <- T  # indicating whether it is mesothermic (TRUE) or ectothermic (FALSE)
+RMR_meso_20 <- RMRfun(size_range, Tm = 20, meso = T, pars)
+RMR_meso_25 <- RMRfun(size_range, Tm = 25, meso = T, pars)
+
+## A endo - expected Ta and RMR
+meso <- F  
+RMR_ecto_20 <- RMRfun(size_range, Tm = 20, meso = F, pars)
+RMR_ecto_25 <- RMRfun(size_range, Tm = 25, meso = F, pars)
+
+# function for ploting
+grad_ribbon_iso <- function(x, y_low, y_high,
+                            n_levels = 200,
+                            col_low = "red", col_high = "blue",
+                            alpha = 0.9, border = NA) {
+  stopifnot(length(x) == length(y_low), length(x) == length(y_high))
+  dif <- y_high - y_low
+  pal <- grDevices::adjustcolor(
+    colorRampPalette(c(col_low, col_high))(n_levels),
+    alpha.f = alpha
+  )
+  for (i in 1:n_levels) {
+    t0 <- (i - 1) / n_levels
+    t1 <- i / n_levels
+    y0 <- y_low + t0 * dif   # curva intermedia inferior
+    y1 <- y_low + t1 * dif   # curva intermedia superior
+    # salta segmentos con NAs
+    if (any(is.na(c(x, y0, y1)))) next
+    polygon(c(x, rev(x)), c(y0, rev(y1)), col = pal[i], border = border)
+  }
+}
+
+# --- plot
+
+# Panel A
+quartz("Fig2", 10,8)
+
+layout(matrix(c(1,3,0,0,2,4,0,5,0,0), 2), widths = c(1,0.4,1,0.4, 0.2))
+par(oma = c(2,5,2,1), mar = c(3.5,0,3.5,0), cex.axis = 1.2)
+
+m <- size_range
+plot(m, RMR_meso_20/1000, type = "n", ylim = c(0,300), xlim = c(0,2000), las = 1, ylab = "", xlab = "", col = "red", xaxs = "i", yaxs = "i", xaxt = "n")
+axis(1, at = c(1,500,1000,2000), labels = c("1 Kg", "500 Kg", "1Ton", "2 Ton"))
+mtext(side = 2, line = 3, expression("Routine metabolic rate (g O"[2]*" h"^-1*" )"))
+mtext(side = 1, line = -29, expression("Body mass"), outer = T, adj = 0.39)
+
+grad_ribbon_iso(m, RMR_meso_20/1000, RMR_meso_25/1000,
+                n_levels = 250, col_low = "#0571B0", col_high = "#D7301F", alpha = 0.95)
+lines(m, RMR_meso_20/1000, col = "#0571B0")
+lines(m, RMR_meso_25/1000, col = "#D7301F")
+
+grad_ribbon_iso(m, RMR_ecto_20/1000, RMR_ecto_25/1000,
+                n_levels = 250, col_low ="#0571B0", col_high = "#D7301F", alpha = 0.95)
+lines(m, RMR_ecto_20/1000, col = "#0571B0")
+lines(m, RMR_ecto_25/1000, col = "#D7301F")
+text(2800, 310, expression("20"*degree*"C"))
+text(2800, 660, expression("25"*degree*"C"))
+
+box()
+
+# --- Leyenda de gradiente (arriba izquierda) ---
+usr <- par("usr")
+
+x_left   <- usr[1] + 0.06*(usr[2]-usr[1])
+x_right  <- x_left + 0.035*(usr[2]-usr[1])
+y_top    <- usr[4] - 0.06*(usr[4]-usr[3])
+y_bottom <- y_top - 0.28*(usr[4]-usr[3])
+
+# Secuencias de bordes (x tiene 2, y muchos)
+x_seq <- c(x_left, x_right)
+y_seq <- seq(y_bottom, y_top, length.out = 251)
+
+# z debe ser (length(x)-1) x (length(y)-1) = 1 x 250
+z <- matrix(seq(0, 1, length.out = 250), nrow = 1)
+
+# Colores: mismo orden que en tus polígonos (low azul -> high rojo)
+pal <- colorRampPalette(c("#0571B0", "#D7301F"))(250)
+
+image(x = x_seq, y = y_seq, z = z, col = pal, add = TRUE)
+rect(x_left, y_bottom, x_right, y_top, border = "black")
+
+# Etiquetas
+text(x_right + 0.01*(usr[2]-usr[1]), y_bottom, expression("20"*degree*"C"), adj = 0)
+text(x_right + 0.01*(usr[2]-usr[1]), y_top,    expression("25"*degree*"C"), adj = 0)
+
+#text(1200, 220, "Mesotherms", cex = 1.2)
+#text(1600, 110, "Ectotherms", cex = 1.2)
+
+# Panel B
+
+# Function to get Tm above Ta across size
+
+calcElevationTmAboveTa <- function(size_range, Ta, meso, pars) {
+  # This function calculates the elevation of Tm above Ta for a range of fish sizes given Ta
+  # size_range: a vector of fish sizes
+  # Ta: ambient temperature
+  # meso: boolean indicating whether the fish is mesothermic (TRUE) or ectothermic (FALSE)
+  # pars: parameters of the linear model
+  
+  # Initialize a vector to store the elevation of Tm above Ta
+  elevation_values <- numeric(length(size_range))
+  
+  # Calculate the elevation of Tm above Ta for each size in the range
+  for (i in 1:length(size_range)) {
+    m <- size_range[i]
+    Tm <- Ta + T0fun(m, Ta, meso = meso, pars = pars) / kfun(m)
+    elevation_values[i] <- Tm - Ta
+  }
+  
+  return(elevation_values)
+}
+
+
+Ta = 20
+
+meso <- TRUE  # indicating the fish is ectothermic (FALSE)
+elevation_values <- calcElevationTmAboveTa(size_range, Ta, meso, pars)
+
+plot(size_range, elevation_values, type = "l", col = "black", yaxs = "i", las = 1, xlim = c(0,2000), ylim = c(0,7), xaxs = "i", ylab = "", xaxt = "n", xlab = "", lwd = 1.5)
+axis(1, at = c(1,500,1000,2000), labels = c("1 Kg", "500 Kg", "1Ton", "2 Ton"))
+
+meso <- F  # indicating the fish is ectothermic (FALSE)
+elevation_values <- calcElevationTmAboveTa(size_range, Ta, meso, pars)
+
+lines(size_range, elevation_values, type = "l", col = "black", lwd = 1.5, lty = 2)
+mtext(side = 2, line = 3, expression("Elevation of T"["m"]*" above T"["a"]*" ("*degree*"C)"))
+
+# Panel C 
+# Initialize a vector to store the Ta values
+Tm <- seq(1, 50, by = 0.5)
+Ta <- numeric(length(Tm))
+m = seq(1,2000, length = 2500)
+
+# Calculate Ta for each Tm value
+meso = F
+col <- (plasma(length(m)))
+
+plot(Tm, Tm, xlim = c(0,45), ylim = c(0,45), type = "n", xaxs = "i", yaxs = "i", xlab = "", ylab = "", las = 1)
+for(i in 1:length(m)) {
+  lines(Tm, Tafun(m[i], Tm, meso, pars), col = col[i])
+}
+abline(0,1, lty = 2)
+mtext(side = 2, expression("Heat balanced T"["a"]*" ("*degree*" C)") , line = 3)
+box()
+
+polygon(c(c(19,50), c(39,22.5)), c(c(9.5,36), c(-100, -100)), col = "white", border = F)
+box()
+
+par(new = T, mar = c(18,4,4,12))
+plot(1,1, xlim = c(0,2000), ylim = c(0,45), type = "n", axes = F, xlab = "", ylab = "")
+
+axis(1, at = c(1, 500, 1000, 2000), labels = c("1Kg", "500", "1Ton", "2 Ton"), cex.axis = 1)
+axis(2, at = c(0,10,20,30,40,60), las = 1)
+mtext(side = 2, expression("T"["a crit"]*" ("*degree*"C)"), line = 2.2, cex = 0.8)
+mtext(side = 1, "Mass", line = 2.2, cex = 0.8)
+
+m_range <- seq(50, 2000, length.out = 2000)
+
+Ta_crit_meso <- maxAmbientTemp(m_range, meso = TRUE, pars)
+Ta_crit_ecto <- maxAmbientTemp(m_range, meso = FALSE, pars)
+
+dd_crit <- data.frame(
+  mass = c(m_range, m_range), 
+  Ta_crit = c(Ta_crit_meso, Ta_crit_ecto), 
+  type = c(rep("meso", length(m_range)), rep("ecto", length(m_range)))
+)
+
+lines(dd_crit[dd_crit$type == "ecto",]$mass, dd_crit[dd_crit$type == "ecto",]$Ta_crit, lwd = 1.5, cex = 0.8, col = "black")
+
+par(mar = c(3.5,0,3.5,0))
+
+# Calculate Ta for each Tm value
+meso = T
+plot(Tm, Tm, xlim = c(1,45), ylim = c(1,45), type = "n", xaxs = "i", yaxs = "i", xlab = "", ylab = "", las = 1)
+for(i in 1:length(m)) {
+  lines(Tm, Tafun(m[i], Tm, meso, pars), col = col[i])
+}
+abline(0,1, lty = 2)
+mtext(side = 1, expression("Body temperature T"["m"]*" ("*degree*" C)"), line = 0, outer = T, adj = 0.4)
+
+polygon(c(c(19,50), c(39,22.5)), c(c(9.5,33), c(-100, -100)), col = "white", border = F)
+box()
+
+par(new = T, mar = c(18,4,4,12))
+
+plot(1,1, xlim = c(0,2000), ylim = c(0,45), type = "n", axes = F, xlab = "", ylab = "")
+axis(1, at = c(1, 500, 1000, 2000), labels = c("1 Kg", "500 Kg", "1Ton", "2 Ton"), cex.axis = 1)
+axis(2, at = c(0,10,20,30,40,60), las = 1)
+mtext(side = 2, expression(italic("T"["a crit"]*" ("*degree*"C)")), line = 2.2, cex = 0.8)
+mtext(side = 1, "Body mass", line = 2.2, cex = 0.8)
+
+m_range <- seq(50, 2000, length.out = 2000)
+
+lines(dd_crit[dd_crit$type == "meso",]$mass, dd_crit[dd_crit$type == "meso",]$Ta_crit, lwd = 1.5, cex = 0.8, col = "black")
+
+par(mar = c(5,1,5,6))
+
+library(plotrix)
+
+plot(NA, NA, ylim = c(1,2000), xlim = c(0,1), xaxt = "n", yaxt = "n", ylab = "", xlab = "", xaxs = "i")
+axis(4, at = c(1, 500, 1000, 2000), labels = c("1 Kg", "500 Kg", "1Ton", "2 Ton"), las = 1)
+
+gradient.rect(0, -85, 1, 2085, col = plasma(length(m)), border = NA, gradient = "y")
+box()
+mtext(side = 4, "Body mass", line = 4)
+
+segments(21,10,35,20)
+
+
+
+
+
+			# Figure 3. 
+			# Energy landscape and theoretical heat balance thresholds for current and future large-bodied fishes. 
+			# Routine metabolic rate increases with water temperature and body size, and is higher for mesothermic fishes. 
+			# In all panels RMR is estimated for current and future Sea Surface Temperature scenarios for a model 1 ton ectotherm 
+			# and 300 kg mesotherm via equations 10 and 5, with white regions indicating SSTs that exceed the theoretical thresholds 
+			# beyond which those fish cannot balance heat production and loss unless engaging behavioural 
+			# (e.g. diving to cooler depths as seen in salmon sharks; 33) or physiological mechanisms 
+			# (such as swimming more slowly or altering blood circulation patterns, as seen in bluefin tuna; 39). 
+			# These heat-balance dynamics could help explain why large fishes migrate seasonally (winter vs summer panels); 
+			# why contemporary mesotherms are distributed toward higher latitudes than ectotherms (top vs bottom panels); 
+			# and could help predict range shifts for large fishes under future ocean warming (“Today” vs “2080-2100” SST scenarios). 
+			#Scenario SSP4-6.0 was used to generate future warming scenarios, with winter and summer reflecting minimum and maximum annual SST estimates.
+
+
+quartz("Fig3", 24,8)
+layout(matrix(c(1,2,0,0,3,4,0,0,5,6,0,0,7,8,9,9),2), widths = c(1, 0.08,1, 0.15, 1, 0.08, 1, 0.25))
+par(oma = c(4,6,5,0), mar = c(2,0,1,0), cex.axis = 2)
+
+# panel A
+size <- m <- 1000
+meso = F
+world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_min.nc")
+x_max <- maxAmbientTemp(m, meso, pars)
+values(world_ta1) <- ifelse(values(world_ta1)>x_max, NA, values(world_ta1) )
+Ta <- world_ta1
+Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
+RMR_values <- RMRfun(m, Tm, meso, pars)
+plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, xaxt = "n", yaxt = "n", ylab = "", xlab = "")
+image((RMR_values), zlim =c(1500, 89469.57), col = magma(50), add = T)
+map("world", fill=TRUE, col="grey", add=TRUE, lwd=0.5)
+mtext(line = 1, "Today", cex = 1.5)
+axis(2, las = 1)
+axis(1, labels = F)
+box()
+
+# panel B
+size <- m <- 300
+meso = T
+world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_min.nc")
+x_max <- maxAmbientTemp(m, meso, pars)
+values(world_ta1) <- ifelse(values(world_ta1)>x_max, NA, values(world_ta1) )
+Ta <- world_ta1
+Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
+RMR_values <- RMRfun(m, Tm, meso, pars)
+plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, xaxt = "n", yaxt = "n", ylab = "", xlab = "")
+image((RMR_values), zlim =c(1500, 89469.57), col = magma(50), add = T)
+map("world", fill=TRUE, col="grey", add=TRUE, lwd=0.5)
+axis(2, las = 1)
+axis(1, labels = T)
+box()
+
+# panel C
+size <- m <- 1000
+meso = F
+world_ta2 <- raster("thetao_ssp460_2090_2100_depthsurf_min.nc")
+x_max <- maxAmbientTemp(m, meso, pars)
+values(world_ta2) <- ifelse(values(world_ta2)>x_max, NA, values(world_ta2) )
+Ta <- world_ta2
+Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
+RMR_values <- RMRfun(m, Tm, meso, pars)
+plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, xaxt = "n",yaxt = "n", ylab = "", xlab = "")
+image((RMR_values), zlim = c(1500, 89469.57),col = magma(50), add = T)
+map("world", fill=TRUE, col="grey", add=TRUE, lwd=0.5)
+mtext(line = 1, "2080-2100", cex = 1.5)
+axis(1, labels = F)
+axis(2, labels = F)
+
+# panel D
+size <- m <- 300
+meso = T
+world_ta2 <- raster("thetao_ssp460_2090_2100_depthsurf_min.nc")
+x_max <- maxAmbientTemp(m, meso, pars)
+values(world_ta2) <- ifelse(values(world_ta2)>x_max, NA, values(world_ta2) )
+Ta <- world_ta2
+Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
+RMR_values <- RMRfun(m, Tm, meso, pars)
+plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, xaxt = "n",yaxt = "n", ylab = "", xlab = "")
+image((RMR_values), zlim = c(1500, 89469.57),col = magma(50), add = T)
+map("world", fill=TRUE, col="grey", add=TRUE, lwd=0.5)
+axis(1)
+axis(2, labels = F)
+mtext("Winter", line = 2, outer = T, adj = 0.21, cex = 2)
+
+# panel E
+size <- m <- 1000
+meso = F
+world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_max.nc")
+x_max <- maxAmbientTemp(m, meso, pars)
+values(world_ta1) <- ifelse(values(world_ta1)>x_max, NA, values(world_ta1) )
+Ta <- world_ta1
+Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
+RMR_values <- RMRfun(m, Tm, meso, pars)
+plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, xaxt = "n", yaxt = "n", ylab = "", xlab = "")
+image((RMR_values), zlim =c(1500, 89469.57), col = magma(50), add = T)
+map("world", fill=TRUE, col="grey", add=TRUE, lwd=0.5)
+mtext(line = 1, "Today", cex = 1.5)
+axis(1, labels = F)
+axis(2, labels = F)
+
+# panel F
+size <- m <- 300
+meso = T
+world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_max.nc")
+x_max <- maxAmbientTemp(m, meso, pars)
+values(world_ta1) <- ifelse(values(world_ta1)>x_max, NA, values(world_ta1) )
+Ta <- world_ta1
+Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
+RMR_values <- RMRfun(m, Tm, meso, pars)
+plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, yaxt = "n", xaxt = "n", ylab = "", xlab = "")
+image((RMR_values), zlim =c(1500, 89469.57), col = magma(50), add = T)
+map("world", fill=TRUE, col="grey", add=TRUE, lwd=0.5)
+axis(1)
+axis(2, labels = F)
+
+# panel G
+size <- m <- 1000
+meso = F
+world_ta2 <- raster("thetao_ssp585_2090_2100_depthsurf_max.nc")
+x_max <- maxAmbientTemp(m, meso, pars)
+values(world_ta2) <- ifelse(values(world_ta2)>x_max, NA, values(world_ta2) )
+Ta <- world_ta2
+Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
+RMR_values <- RMRfun(m, Tm, meso, pars)
+plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, xaxt = "n",yaxt = "n", ylab = "", xlab = "")
+image((RMR_values), zlim = c(1500, 89469.57),col = magma(50), add = T)
+map("world", fill=TRUE, col="grey", add=TRUE, lwd=0.5)
+mtext(line = 1, "2080-2100", cex = 1.5)
+axis(1, labels = F)
+axis(2, labels = F)
+
+# panel H
+size <- m <- 300
+meso = T
+world_ta2 <- raster("thetao_ssp585_2090_2100_depthsurf_max.nc")
+x_max <- maxAmbientTemp(m, meso, pars)
+values(world_ta2) <- ifelse(values(world_ta2)>x_max, NA, values(world_ta2) )
+Ta <- world_ta2
+Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
+RMR_values <- RMRfun(m, Tm, meso, pars)
+plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, xaxt = "n",yaxt = "n", ylab = "", xlab = "")
+image((RMR_values), zlim = c(1500, 89469.57),col = magma(50), add = T)
+map("world", fill=TRUE, col="grey", add=TRUE, lwd=0.5)
+axis(1)
+axis(2, labels = F)
+mtext("Summer", line = 2, outer = T, adj = 0.71, cex = 2)
+
+par(mar = c(8,1,8,6))
+library(plotrix)
+plot(NA, NA, ylim = c(1500, 89469.57), xlim = c(0,1), xaxt = "n", yaxt = "n", ylab = "", xlab = "", xaxs = "i",yaxs = "i")
+axis(4, las = 1, at = c(10,20,30,40,50,60,70,80,90)*1000, labels = c(10,20,30,40,50,60,70,80,90))
+gradient.rect(0,1500, 1, 89469.57, col= magma(50),border=NA, gradient="y")
+box()
+mtext(side = 4, expression("Routine metabolic rate (g O"[2]*" h"^-1*" )"), line = 4.5, cex = 1.5)
+
+mtext(side = 1, outer = T, expression("Longitude ("*degree*")"), line = 3, adj = 0.46, cex = 1.5)
+mtext(side = 2, outer = T, expression("Latitude ("*degree*")"), line = 3, adj = 0.475, cex = 1.5)

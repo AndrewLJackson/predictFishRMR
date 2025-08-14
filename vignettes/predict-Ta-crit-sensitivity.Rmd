@@ -21,7 +21,7 @@ library(predictFishRMR)
 library(tidyverse)
 
 # for extracting the coefficients of the brms regression model
-library(brms)
+# library(brms)
 
 ```
 
@@ -29,7 +29,7 @@ library(brms)
 
 In this example we explore how our estimate of critical ambient temperature, above which we predict a fish to be unable to maintain long term thermal equilibrium. We generate estimates over a range of body masses for both thermal strategies of mesothermy and ectothermy. We use the mean K as predicted according to Nakamura's approach alongside a sensitivity whereby this value is assumed to vary by a factor of 2 in both directions (i.e. K is taken as both double and half its predicted value), thereby providing a 4-fold range. 
 
-```{r}
+```{r, fig.width=5}
 
 # generate a sequence of mass for the x-axis of the plots
 m_range <- seq(100, 10000, length.out = 100)
@@ -41,7 +41,7 @@ m_range <- seq(100, 10000, length.out = 100)
 # 3 = beta the coefficient of Body temperature
 # 4 = the effect of mesothermy (psi)
 data("fittedModelRMR")
-pars <- brms::fixef(fittedModelRMR)[,1]
+pars <- fittedModelRMR$fixef
 
 # calculate the mean predicted Ta_crit for the mass vector
 Ta_crit_meso <- maxAmbientTemp(m_range, meso = TRUE, pars, preK = 1)
@@ -77,7 +77,7 @@ gg_crit <- ggplot(data = dd_crit,
               show.legend = FALSE) + 
   ylab("Critical water temperature (C)") + 
   xlab("Mass (kg)") + 
-  ylim(c(0, 60)) + 
+  ylim(c(0,60)) + 
   xlim(c(0, 2500))
 
 # print to screen

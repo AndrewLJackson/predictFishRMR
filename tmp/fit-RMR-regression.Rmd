@@ -1,0 +1,253 @@
+---
+title: "Fit the phylogenetic regression of RMR by body mass"
+author: "Andrew L Jackson"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fit the phylogenetic regression of RMR by body mass}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{rstan}
+  %\VignetteDepends{brms}
+  %\VignetteDepends{ape}
+  %\VignetteDepends{parallel}
+  \usepackage[utf8]{inputenc}
+---
+
+
+## Setup
+
+```{r}
+library(predictFishRMR)
+library(rstan)
+library(brms)
+library(ape)
+library(parallel) # run models in parallel
+
+```
+
+
+## Introduction
+
+In this file we illustrate how the phylogenetic regression model of RMR against body mass for the two thermal strategies was fitted. Because the fitting process is computationally expensive and can take some time, the early part of this vignette has code chunks set to `eval = FALSE`. These were set to `eval = TRUE` and the resultant model fit was saved to an `.rda` file. This `.rda` object is loaded in place of re-running the models, but users can take a copy of the `*.Rmd` associated with the vignette and change the eval flags to re-run the analysis themselves. We also include here the random seed value used to generate the model we present below, although it is possible that the use of the `parallel` package might result in different values generate if the number of cores differs by machine, or if the parallel instances do not inherit the same random seed.
+
+```{r}
+# set the random seed.
+set.seed(101)
+```
+
+
+## Import and clean data
+
+The raw species and tree datasets have to be tidied somewhat to ensure data types are correct and species character strings match exactly. 
+
+
+### Resting metabolic dataset 
+
+Load the raw RMR dataset.  
+
+```{r}
+
+# locate the full directory on this local machine for the MandT data
+# in this package
+rmr_file_string <- system.file("extdata/MandT.csv",
+                                  package = "predictFishRMR")
+
+# load the data
+rmr_data <- read.csv( rmr_file_string )
+```
+
+The RMR data needs some cleaning so that the species names agree with those in the tree file.
+
+```{r}
+
+```
+
+### Species names dataset
+
+Load the species names data.
+
+```{r}
+
+```
+
+Process the species names data. 
+
+```{r}
+
+```
+
+### Phylogenetic tree dataset
+
+```{r}
+# locate the full directory on this local machine for the tree data
+# in this package
+tree_file_string <- system.file("extdata/shark_fish.trees",
+                                  package = "predictFishRMR")
+
+# load the file
+tree <- read.tree(tree_file_string)
+```
+
+Process the tree tips for matching. 
+
+```{r}
+
+tree$tip.label <- gsub("_", " ", tree$tip.label)
+
+tree$tip.label[tree$tip.label == "Pseudocaranx dentex -formaly Longirostrum delicatissimus"] <- "Pseudocaranx dentex (formaly Longirostrum delicatissimus) "
+tree$tip.label[tree$tip.label == "Ranzania laevis- Ostracion boops stage"] <- "Ranzania laevis, Ostracion boops stage"
+tree$tip.label[tree$tip.label == "Coregonus lavaretus -larvae"] <- "Coregonus lavaretus (larvae)"
+tree$tip.label[tree$tip.label == "Sardinops sagax -formaly S. caerulea"] <- "Sardinops sagax (formaly S. caerulea)"
+tree$tip.label[tree$tip.label == "Ophichthus gomesii- leptocephalus larvae"] <- "Ophichthus gomesii, leptocephalus larvae"
+tree$tip.label[tree$tip.label == "Paraconger caudilimbatus- leptocephalus larvae"] <- "Paraconger caudilimbatus, leptocephalus larvae"
+tree$tip.label[tree$tip.label == "Ariosoma balearicum- leptocephalus larvae"] <- "Ariosoma balearicum, leptocephalus larvae"
+tree$tip.label[tree$tip.label == "Gymnothorax saxicola- leptocephalus larvae"] <- "Gymnothorax saxicola, leptocephalus larvae"
+
+rmr_data$spp[rmr_data$spp == "Negaprion brevirostris\xa0"] <- "Negaprion brevirostris"
+rmr_data$spp[rmr_data$spp == "Mustelus antarcticus\xa0"] <- "Mustelus antarcticus"
+rmr_data$spp[rmr_data$spp == "A. fimbria"] <- "Anoplopoma fimbria"
+rmr_data$spp[rmr_data$spp == "Oncorhynchus\xa0tshawytscha"] <- "Oncorhynchus tshawytscha"
+rmr_data$spp[rmr_data$spp == "Trachurus capensis\xa0"] <- "Trachurus capensis"
+rmr_data$spp[rmr_data$spp == "Hypoatherina sp"] <- "Hypoatherina sp."
+rmr_data$spp[rmr_data$spp == "Monacanthidae sp"] <- "Monacanthidae"
+rmr_data$spp[rmr_data$spp == "Monacanthidae sp."] <- "Monacanthidae"
+rmr_data$spp[rmr_data$spp == "Ambassis sp"] <- "Ambassis sp."
+rmr_data$spp[rmr_data$spp == "Caulophrynidae sp."] <- "Caulophrynidae"
+rmr_data$spp[rmr_data$spp == "Scomberesocidae sp."] <- "Scomberesocidae"
+rmr_data$spp[rmr_data$spp == "Carcharodon carcharius"] <- "Carcharodon carcharias"
+rmr_data$spp[rmr_data$spp == "Thunnys maccoyyi"] <- "Thunnus maccoyii"
+
+```
+
+### Name matching and variable type classification
+
+Check that the names match in the trait data and the species tree data.
+
+```{r}
+# Especies en el dataset que faltan en el árbol
+missing_in_tree <- setdiff(unique(rmr_data$spp), tree$tip.label)
+missing_in_tree
+
+# Especies en el árbol que no están en el dataset
+extra_in_tree <- setdiff(tree$tip.label, unique(rmr_data$spp))
+extra_in_tree
+
+# Podar el árbol para eliminar especies extra
+tree <- drop.tip(tree, extra_in_tree)
+
+# Especies comunes entre ambos (dataset y árbol)
+common_species <- intersect(unique(rmr_data$spp), tree$tip.label)
+common_species
+
+# Check if all dataset species are present in phylogeny
+all_match <- all(sort(unique(rmr_data$spp)) %in% sort(tree$tip.label))
+all_match  # TRUE if all dataset species are included in the tree
+
+# --- housekeeping
+rmr_data$method <- factor(rmr_data$method)
+rmr_data$therm <- factor(rmr_data$therm)
+rmr_data <- rmr_data[complete.cases(rmr_data),]
+```
+
+## Bayesian Linear Mixed / Phylogenetic Model
+
+Calculate log transformed variables of mass and RMR.
+
+```{r}
+
+rmr_data$logM   <- log(rmr_data$mass.kg)
+rmr_data$logRMR <- log(rmr_data$RMR.mg.O2.h)
+
+```
+
+This chunk is not evaluated by default. 
+
+```{r, eval = FALSE}
+
+```
+
+Fit the model. This chunk is not evaluated by default and instead the subsequent chunk will load the data. 
+
+```{r, eval = FALSE}
+
+# set model priors
+priors = c(
+  prior(normal(0,10), "b"),
+  prior(normal(0,50), "Intercept"),
+  prior(student_t(3,0,20), "sd"),
+  prior(student_t(3,0,20), "sigma")
+)
+
+# run Bayesian model including phylogenetic tree
+set.seed(23); mod <- brm((logRMR)  ~ logM + T + therm # fixed coefficients
+  + (1 | gr(spp, cov = A)) + (1| spp_name), # random factors
+  family = gaussian(), 
+  data2 = list(A = A),
+  prior = priors,
+  sample_prior = TRUE, 
+  chains = 2, 
+  cores = 16, # cores to be used 8 in mac pro
+  iter = 3000, 
+  warmup = 500,
+  control = list(adapt_delta = 0.99, max_treedepth = 15), # Improve convergence
+  save_pars = save_pars(all = TRUE),
+  data = rmr_data)
+
+  								
+
+```
+
+Load the pre-run model data object and assign it the name "mod".
+
+```{r}
+data("fittedModelRMR")
+
+mod <- fittedModelRMR
+
+
+```
+
+
+
+Plot histograms of the parameter posterior estimates alongside traceplots of the chains. 
+
+```{r, eval = TRUE}
+# Plot of histograms and traceplots
+plot(mod)
+
+```
+
+Posterior predictive check plot
+
+```{r}
+pp_check(mod)
+```
+
+
+
+Calculate summaries of the posterior estimates including convergence checks. 
+
+```{r}
+
+# extract posteriors
+posterior_samples <- as_draws(mod)
+
+# get coefficients
+summary(mod) 
+
+# get bayesian p-value
+# p_map(mod)
+```
+
+
+Save the fitted model. This chunk is not evaluated by default and the internal commands are commmented out. Users can uncomment and set to `eval = TRUE` if they wish to run this and save the object locally.
+
+```{r, eval = FALSE}
+save(fittedModelRMR, 
+     file = "fittedModelRMR.rda", 
+     compress = "xz")
+```
+
+
+
+

@@ -45,13 +45,13 @@ K <- kfun(m = mm)
 
 # load the fitted regression model and extract the parameters
 data("fittedModelRMR")
-pars <- brms::fixef(fittedModelRMR)[,1]
+pars <- fittedModelRMR$fixef
 
 # loop over the sequence of water temperatures in the vector Ta
 # Estimate the body temperature at thermal equilibrium and take only the 
 # first branch of the Lambert function estimates. 
 Tm <- Ta |>
-  map(\(x) bodyTempLambert(x, m = mm, k = K, meso = mesotherm, pars = pars)) |>
+  map(\(x) bodyTempLambert(x, m = mm, meso = mesotherm, pars = pars, k = K, kpars = NULL)) |>
   bind_rows() |>
   filter(branch == 0)
 
@@ -66,11 +66,11 @@ dd <- tibble(Ta = Ta, Tm = Tm, RMR = RMR)
 
 Plot the relationship between RMR and Ta
 
-```{r}
+```{r, fig.width=5}
 
-g1 <- ggplot(data = dd, mapping = aes(x = Ta, y = Tm$y)) + 
+g1 <- ggplot(data = dd, mapping = aes(x = Ta, y = RMR)) + 
   geom_line() + 
-  ggtitle(paste0("mass = ", mm, "kg"))
+  ggtitle(paste0("mass = ", mm, "kg")) 
 
 print(g1)
 
