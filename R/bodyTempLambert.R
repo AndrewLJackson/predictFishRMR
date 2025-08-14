@@ -15,16 +15,16 @@
 #' @export
 #'
 bodyTempLambert <-
-function(x, m, kpars = NULL,meso, pars){
+function(x, m, k = NULL, kpars = NULL,meso, pars){
   
   # calculate the cooling rate k from allometric relationship with mass if not
   # provided. The coefficients used to estimate k from kfum() can be 
   # set using values provided to kpars, else the default values are used. 
   kk <- ifelse(is.null(k), 
                ifelse(is.null(kpars), 
-                      kfun(m), 
-                      kfun(m, kpars)), 
-               k)
+                      kk <- kfun(m), 
+                      kk <- kfun(m, kpars)), 
+               kk <- k)
   
   # extract the parameters to pass onwards
   gg <- pars[1] # gamma, the intercept

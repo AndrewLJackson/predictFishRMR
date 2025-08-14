@@ -51,7 +51,7 @@ pars <- fittedModelRMR$fixef
 # Estimate the body temperature at thermal equilibrium and take only the 
 # first branch of the Lambert function estimates. 
 Tm <- Ta |>
-  map(\(x) bodyTempLambert(x, m = mm, k = K, meso = mesotherm, pars = pars)) |>
+  map(\(x) bodyTempLambert(x, m = mm, meso = mesotherm, pars = pars, k = K, kpars = NULL)) |>
   bind_rows() |>
   filter(branch == 0)
 
