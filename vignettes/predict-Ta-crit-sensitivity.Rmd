@@ -29,7 +29,7 @@ library(tidyverse)
 
 In this example we explore how our estimate of critical ambient temperature, above which we predict a fish to be unable to maintain long term thermal equilibrium. We generate estimates over a range of body masses for both thermal strategies of mesothermy and ectothermy. We use the mean K as predicted according to Nakamura's approach alongside a sensitivity whereby this value is assumed to vary by a factor of 2 in both directions (i.e. K is taken as both double and half its predicted value), thereby providing a 4-fold range. 
 
-```{r, fig.width=10}
+```{r, fig.width=5}
 
 # generate a sequence of mass for the x-axis of the plots
 m_range <- seq(100, 10000, length.out = 100)

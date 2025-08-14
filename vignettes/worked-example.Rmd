@@ -66,11 +66,11 @@ dd <- tibble(Ta = Ta, Tm = Tm, RMR = RMR)
 
 Plot the relationship between RMR and Ta
 
-```{r}
+```{r, fig.width=5}
 
-g1 <- ggplot(data = dd, mapping = aes(x = Ta, y = Tm$y)) + 
+g1 <- ggplot(data = dd, mapping = aes(x = Ta, y = RMR)) + 
   geom_line() + 
-  ggtitle(paste0("mass = ", mm, "kg"))
+  ggtitle(paste0("mass = ", mm, "kg")) 
 
 print(g1)
 
