@@ -1,0 +1,8 @@
+---
+title: "Compare the difference in using the two K regression models"
+output: html_notebook
+---
+
+
+
+
