@@ -18,9 +18,11 @@ function(m, meso, pars, preK = 1, kpars = NULL){
   
   # calculate the cooling rate k from allometric relationship with mass
   # using provided scaling parameters if supplied. 
-  kk <- ifelse(is.null(kpars), 
-         kfun(m) * preK, 
-         kfun(m, kpars) * preK)
+  # if(is.null(kpars))  kk <- kfun(m) * preK
+  # if(!is.null(kpars)) kk <- kfun(m, kpars) * preK
+  ifelse(is.null(kpars),
+         kk <- kfun(m) * preK,
+         kk <- kfun(m, kpars) * preK)
   
   # kk <- kfun(m) * preK
   

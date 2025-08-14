@@ -5,4 +5,89 @@ output: html_notebook
 
 
 
+## Setup
 
+```{r}
+# load the predictFishRMR package 
+library(predictFishRMR)
+
+# for plotting and tibble manipulation
+library(tidyverse)
+
+```
+
+## Sensitivity of our estimate on regression model for K
+
+
+
+```{r, fig.width=10}
+
+# generate a sequence of mass for the x-axis of the plots
+m_range <- seq(100, 10000, length.out = 100)
+
+kk_incl <- kfun(m_range, kpars = c(0.00201, -0.6166))
+kk_excl <- kfun(m_range, kpars = c(0.00173, -0.6330))
+
+dd_test <- tibble(mass = rep(m_range, 2), 
+                  'Thermal Strategy' = c(rep("mesotherm", length(m_range)), 
+                          rep("ectotherm", length(m_range))),
+                  K = c(kk_incl, kk_excl))
+
+gg_test <- ggplot(dd_test, mapping = aes(x = mass, y = K, 
+                                color = `Thermal Strategy`)) + 
+  geom_line() + 
+  scale_x_log10() + 
+  scale_y_log10()
+print(gg_test)
+
+# load and retrieve the parameters for the RMR regression
+# order of the parameters is:
+# 1 = Intercept (gamma)
+# 2 = alpha the coefficient of log10(mass)
+# 3 = beta the coefficient of Body temperature
+# 4 = the effect of mesothermy (psi)
+data("fittedModelRMR")
+pars <- fittedModelRMR$fixef
+
+# calculate Ta_crit regression that includes basking and whale sharks
+Ta_crit_meso_incl <- maxAmbientTemp(m_range, meso = TRUE, pars, 
+                                    kpars = c(0.00201, -0.6166))
+Ta_crit_ecto_incl <- maxAmbientTemp(m_range, meso = FALSE, pars, 
+                                    kpars = c(0.00201, -0.6166))
+
+# calculate Ta_crit regression that excludes basking and whale sharks
+Ta_crit_meso_excl <- maxAmbientTemp(m_range, meso = TRUE, pars, 
+                                    kpars = c(0.00173, -0.6330))
+Ta_crit_ecto_excl <- maxAmbientTemp(m_range, meso = FALSE, pars, 
+                                    kpars = c(0.00173, -0.6330))
+
+# assemble the data.frame (tibble) for plotting
+dd_crit <- tibble(mass = rep(m_range, 4), 
+                  Ta_crit = c(Ta_crit_meso_incl, Ta_crit_ecto_incl, 
+                              Ta_crit_meso_excl, Ta_crit_ecto_excl),
+                  'Thermal Strategy' = rep(
+                    c(rep("mesotherm", length(m_range)), 
+                      rep("ectotherm", length(m_range))), 
+                    2),
+                  BigFish =
+                    c(rep("Incl", length(m_range)), rep("Incl", length(m_range)), 
+                      rep("Excl", length(m_range)),rep("Excl", length(m_range)) )
+)
+
+
+# plot the curves including the sensitivity as a ribbon plot
+gg_crit <- ggplot(data = dd_crit, 
+                  mapping = aes(x = mass, y = Ta_crit, 
+                                color = `Thermal Strategy`,
+                                linetype = BigFish)) + 
+  geom_path() + 
+  scale_color_viridis_d(option = "D", begin = 0.2, end = 0.8) + 
+  ylab("Critical water temperature (C)") + 
+  xlab("Mass (kg)") + 
+  ylim(c(0,60)) + 
+  xlim(c(0, 2500))
+
+# print to screen
+print(gg_crit)
+
+```

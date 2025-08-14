@@ -15,9 +15,8 @@ vignette: >
 ## Setup
 
 ```{r}
-# library(predictFishRMR)
+library(predictFishRMR)
 
-library(tidyverse)
 
 # r_files <- list.files("../r", pattern = ".R", full.names = T)
 # for (i in 1:length(r_files)){source(r_files[i])}
@@ -110,7 +109,7 @@ Define the parameters of the model taken from the PGLS regression model. Note th
 # pars <- c(0.8700325, 0.8161589, 0.0505157 , 0.8358592, 10^5.945)
 # pars <- c(2.9468, 0.8271, 0.0805, 1.2333)
 data("fittedModelRMR")
-pars <- fittedModelRMR$fixef[,1]
+pars <- fittedModelRMR$fixef
 ```
 
 
