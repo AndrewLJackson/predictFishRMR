@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' kfun(1000)
-#' kfun(m = c(1, 10, 100, 1000), a = 0.0018, b = -0.63)
+#' kfun(m = c(1, 10, 100, 1000), kpars = c(a = 0.00201, b = -0.617))
 kfun <-
 function(m, kpars = c(a = 0.00201, b = -0.617)){
   
