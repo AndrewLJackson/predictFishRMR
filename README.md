@@ -24,8 +24,17 @@ or you can install a particular version such as the latest stable release
 
 ``` r
 # install.packages("pak")
-pak::pak("AndrewLJackson/predictFishRMR@v1.0.0", build_vignettes = TRUE)
+pak::pak("AndrewLJackson/predictFishRMR@v1.0.1", build_vignettes = TRUE)
 ```
+
+of via devtools
+
+``` r
+# install.packages("devtools")
+devtools::build_github("AndrewLJackson/predictFishRMR@v1.0.1", build_vignettes = TRUE)
+```
+
+
 
 ### Alternative installation route
 
