@@ -31,7 +31,7 @@ of via devtools
 
 ``` r
 # install.packages("devtools")
-devtools::build_github("AndrewLJackson/predictFishRMR@v1.0.1", build_vignettes = TRUE)
+devtools::install_github("AndrewLJackson/predictFishRMR@v1.0.1", build_vignettes = TRUE)
 ```
 
 
