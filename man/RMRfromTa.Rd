@@ -21,6 +21,12 @@ corresponding fitted linear regression}
 equation and "b" the scaling exponent. Supplying NULL, the default, uses
 default parameter. See `?kfun` for details.}
 }
+\value{
+a vector the same length as `m` with corresponding RMR values
+}
 \description{
 Esimate Routine Metabolic Rate (RMR) from ambient water temperature (Ta)
+}
+\examples{
+RMRfromTa(m = c(100, 1000), Ta = 15, meso = T, pars = c(2.95, 0.83, 0.08, 1.23), kpars = c(a = 0.00201, b = -0.617))
 }

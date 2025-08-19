@@ -10,10 +10,10 @@
 #'   equation and "b" the scaling exponent. Supplying NULL, the default, uses
 #'   default parameter. See `?kfun` for details.
 #'
-#' @returns
+#' @returns a vector the same length as `m` with corresponding RMR values
 #' @export
 #'
-#' @examples
+#' @examples RMRfromTa(m = c(100, 1000), Ta = 15, meso = T, pars = c(2.95, 0.83, 0.08, 1.23), kpars = c(a = 0.00201, b = -0.617))
 RMRfromTa <- function(m, Ta, meso, pars, kpars = NULL) {
   
   # convert Ta to Tm
