@@ -4,12 +4,12 @@
 \alias{fitRegressionK}
 \title{Fit a log-log regression model to estimate K from body mass}
 \usage{
-fitRegressionK(dd = utils::data("Kmass"))
+fitRegressionK(dd = NULL)
 }
 \arguments{
-\item{dd}{a data.frame or tibble object comprising three columns: species, M
-(log mass in ) and cooling coefficient K. Defaults to the included dataset
-Kmass.}
+\item{dd}{a data.frame or tibble object comprising three columns: "species", 
+"M"(log mass in ) and cooling coefficient "K". 
+Defaults to the included dataset Kmass.}
 }
 \value{
 a model object of a log-log regression

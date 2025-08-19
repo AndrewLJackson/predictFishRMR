@@ -4,14 +4,13 @@
 \alias{kfun}
 \title{Estimate k from Nakamura's exponential scaling}
 \usage{
-kfun(m, a = 0.00161, b = -0.62)
+kfun(m, kpars = c(a = 0.00173, b = -0.633))
 }
 \arguments{
 \item{m}{body mass of the fish in g}
 
-\item{a}{the prefactor of the exponential scaling equation}
-
-\item{b}{the scaling exponent}
+\item{kpars}{a vector contain "a" the prefactor of the exponential scaling
+equation and "b" the scaling exponent}
 }
 \value{
 an estimate of the cooling coefficient k
@@ -21,5 +20,5 @@ Estimate k from Nakamura's exponential scaling
 }
 \examples{
 kfun(1000)
-kfun(m = c(1, 10, 100, 1000), a = 0.00161, b = -0.62)
+kfun(m = c(1, 10, 100, 1000), kpars = c(a = 0.00201, b = -0.617))
 }

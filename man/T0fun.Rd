@@ -15,6 +15,8 @@ T0fun(m, Tm, meso, pars)
 endotherm) or FALSE for ectotherm}
 
 \item{pars}{the coefficients of the fitted regression model}
+
+\item{omega}{the coefficient of mass to convert metabolic rate into temperature. Defaults to 10^0.5945}
 }
 \value{
 a vector the same length as input m containing the corresponding estimated metabolic heat production parameter T0

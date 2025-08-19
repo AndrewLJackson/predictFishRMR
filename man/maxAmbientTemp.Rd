@@ -4,7 +4,7 @@
 \alias{maxAmbientTemp}
 \title{Calculate the maximum value of water temperature that yields real numbers}
 \usage{
-maxAmbientTemp(m, meso, pars)
+maxAmbientTemp(m, meso, pars, preK = 1, kpars = NULL)
 }
 \arguments{
 \item{m}{body mass of the fish in g}
@@ -13,6 +13,14 @@ maxAmbientTemp(m, meso, pars)
 endotherm) or FALSE for ectotherm}
 
 \item{pars}{the coefficients of the fitted regression model}
+
+\item{preK}{is a prefactor that is applied to the estimated cooling
+coefficient K that allows uncertainty in this parameter to be explored}
+
+\item{kpars}{a vector contain "a" the prefactor of the exponential scaling
+equation and "b" the scaling exponent. If k is provided, kpars is ignored.}
+
+\item{omega}{the coefficient of mass to convert metabolic rate into temperature. Defaults to 10^0.5945}
 }
 \value{
 a vector of length m with corresponding max water temperatures in C

@@ -4,7 +4,7 @@
 \alias{Tafun}
 \title{Calculates the ambient water temperature associated with heat balance for a given body temperature}
 \usage{
-Tafun(m, Tm, meso, pars)
+Tafun(m, Tm, meso, pars, kpars = NULL)
 }
 \arguments{
 \item{m}{body mass in g}
@@ -15,6 +15,9 @@ Tafun(m, Tm, meso, pars)
 endotherm) or FALSE for ectotherm}
 
 \item{pars}{the coefficients of the fitted regression model}
+
+\item{kpars}{a vector contain "a" the prefactor of the exponential scaling
+equation and "b" the scaling exponent.}
 }
 \value{
 the ambient water temperature in C

@@ -4,17 +4,25 @@
 \alias{bodyTempLambert}
 \title{Solve the model for body temperature as a function of ambient water temp}
 \usage{
-bodyTempLambert(x, m, meso, pars)
+bodyTempLambert(x, m, k = NULL, kpars = NULL, meso, pars)
 }
 \arguments{
 \item{x}{ambient water temperature in C}
 
 \item{m}{body mass in g}
 
+\item{k}{cooling coefficient k. Defaults to NULL which causes it to be
+estimated from m via allometric scaling kfun()}
+
+\item{kpars}{a vector contain "a" the prefactor of the exponential scaling
+equation and "b" the scaling exponent. If k is provided, kpars is ignored.}
+
 \item{meso}{a switch parameter that is either TRUE for mesotherm (or regional
 endotherm) or FALSE for ectotherm}
 
 \item{pars}{the coefficients of the fitted regression model}
+
+\item{omega}{the coefficient of mass to convert metabolic rate into temperature. Defaults to 10^0.5945}
 }
 \value{
 body temperature in C

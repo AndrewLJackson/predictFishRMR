@@ -7,16 +7,19 @@
 RMRfun(m, Tm, meso, pars)
 }
 \arguments{
-\item{m}{body mass in g}
+\item{m}{body mass in g, typically provided as a vector but could be scalar.}
 
 \item{Tm}{body temperature in C}
 
-\item{meso}{a logical value where TRUE indicates mesotherm and FALSE indicates ectotherm}
+\item{meso}{a logical value where TRUE indicates mesotherm and FALSE
+indicates ectotherm}
 
-\item{pars}{a vector of length 4 containing the coefficients of the corresponding fitted linear regression}
+\item{pars}{a vector of length 4 containing the coefficients of the
+corresponding fitted linear regression}
 }
 \value{
-a vector the same length as input m containing the corresponding estimates of resting metabolic rate RMR
+a vector the same length as input m containing the corresponding
+  estimates of resting metabolic rate RMR
 }
 \description{
 Calculate RMR for a fish of given mass, body temperature and thermal strategy
