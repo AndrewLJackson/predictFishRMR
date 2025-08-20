@@ -82,7 +82,7 @@ gg_crit <- ggplot(data = dd_crit,
                                 linetype = BigFish)) + 
   geom_path() + 
   scale_color_viridis_d(option = "D", begin = 0.2, end = 0.8) + 
-  ylab("Critical water temperature (C)") + 
+  ylab("Threshold temperature (C)") + 
   xlab("Mass (kg)") + 
   ylim(c(0,60)) + 
   xlim(c(0, 2500))
