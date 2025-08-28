@@ -20,7 +20,7 @@ function(x, m, k = NULL, kpars = NULL,meso, pars){
   # calculate the cooling rate k from allometric relationship with mass if not
   # provided. The coefficients used to estimate k from kfum() can be 
   # set using values provided to kpars, else the default values are used. 
-  kk <- ifelse(is.null(k), 
+  ifelse(is.null(k), 
                ifelse(is.null(kpars), 
                       kk <- kfun(m), 
                       kk <- kfun(m, kpars)), 

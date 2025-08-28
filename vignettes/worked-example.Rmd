@@ -5,7 +5,6 @@ output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{A worked example}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{lamW}
   %\VignetteDepends{tidyverse}
   %\VignetteDepends{patchwork}
   \usepackage[utf8]{inputenc}
@@ -25,14 +24,14 @@ library(tidyverse)
 
 ## Introduction
 
-Here we use the functions in the pacakge `predictFishRMR` to predict various features of a fishe's metabolism and ecological constraints based on their mass and physiology type. 
+Here we use the functions in the package `predictFishRMR` to predict various features of a fishe's metabolism and ecological constraints based on their mass and physiology type. 
 
-For this example we pick a fish with mass = 3000g.
+For this example we pick a mesotherm fish with mass = 2000g.
 
 ```{r}
 
 # mass of fish
-mm <- 1000
+mm <- 2000
 
 # range of water temperatures in C
 Ta <- seq(0,30, by = 0.25)
@@ -40,8 +39,11 @@ Ta <- seq(0,30, by = 0.25)
 # mesotherm (meso = T) or ecotherm (meso = F)?
 mesotherm <- TRUE
 
+# define our own kpars to use
+kpars <- c(0.00174, -0.63180)
+
 # Estimate the cooling coefficient K
-K <- kfun(m = mm)
+# K <- kfun(m = mm)
 
 # load the fitted regression model and extract the parameters
 data("fittedModelRMR")
@@ -51,7 +53,8 @@ pars <- fittedModelRMR$fixef
 # Estimate the body temperature at thermal equilibrium and take only the 
 # first branch of the Lambert function estimates. 
 Tm <- Ta |>
-  map(\(x) bodyTempLambert(x, m = mm, meso = mesotherm, pars = pars, k = K, kpars = NULL)) |>
+  map(\(x) bodyTempLambert(x, m = mm, meso = mesotherm, 
+                           pars = pars, kpars = kpars)) |>
   bind_rows() |>
   filter(branch == 0)
 
@@ -60,11 +63,11 @@ RMR <- RMRfun(mm, Tm$y, mesotherm, pars = pars)
 
 
 # create a tibble for plotting in ggplot
-dd <- tibble(Ta = Ta, Tm = Tm, RMR = RMR)
+dd <- tibble(Ta = Ta, Tm = Tm$y, RMR = RMR)
 
 ```
 
-Plot the relationship between RMR and Ta
+Plot the relationship between RMR and $T_a$
 
 ```{r, fig.width=5}
 
@@ -76,7 +79,34 @@ print(g1)
 
 ```
 
+Plot the relationship between RMR and $T_m$
+
+```{r, fig.width=5}
+
+g2 <- ggplot(data = dd, mapping = aes(x = Tm, y = RMR)) + 
+  geom_line() + 
+  ggtitle(paste0("mass = ", mm, "kg")) 
+
+print(g2)
+
+```
 
 
 
+And body temperature $T_m$ relationship with ambient water temperature $T_a$
+
+```{r}
+g3 <- ggplot(data = dd, mapping = aes(x = Ta, y = Tm)) + 
+  geom_line() + 
+  ggtitle(paste0("mass = ", mm, "kg")) 
+
+print(g3)
+```
+
+Panel plot
+
+```{r}
+library(patchwork)
+g1 + g2 + g3 + plot_layout(nrow = 2, byrow = T)
+```
 
