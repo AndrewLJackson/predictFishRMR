@@ -52,10 +52,8 @@ pars <- fittedModelRMR$fixef
 # loop over the sequence of water temperatures in the vector Ta
 # Estimate the body temperature at thermal equilibrium and take only the 
 # first branch of the Lambert function estimates. 
-Tm <- Ta |>
-  map(\(x) bodyTempLambert(x, m = mm, meso = mesotherm, 
-                           pars = pars, kpars = kpars)) |>
-  bind_rows() |>
+Tm <- bodyTempLambert(Ta, m = mm, meso = mesotherm, 
+                      pars = pars, kpars = kpars) |>
   filter(branch == 0)
 
 # Estimate routine metabolic rate RMR over the range of  body temperatures
