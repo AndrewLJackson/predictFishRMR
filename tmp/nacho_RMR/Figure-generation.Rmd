@@ -517,7 +517,57 @@ dev.off()
 
 Figure 3. Energy landscape and theoretical heat balance thresholds for current and future large-bodied fishes. Routine metabolic rate increases with water temperature and body size, and is higher for mesothermic fishes. In all panels RMR is estimated for current and future Sea Surface Temperature scenarios for a model 1 ton ectotherm and 300 kg mesotherm via equations 10 and 5, with white regions indicating SSTs that exceed the theoretical thresholds beyond which those fish cannot balance heat production and loss unless engaging behavioural (e.g. diving to cooler depths as seen in salmon sharks; 33) or physiological mechanisms (such as swimming more slowly or altering blood circulation patterns, as seen in bluefin tuna; 39). These heat-balance dynamics could help explain why large fishes migrate seasonally (winter vs summer panels); why contemporary mesotherms are distributed toward higher latitudes than ectotherms (top vs bottom panels); and could help predict range shifts for large fishes under future ocean warming (“Today” vs “2080-2100” SST scenarios). Scenario SSP4-6.0 was used to generate future warming scenarios, with winter and summer reflecting minimum and maximum annual SST estimates.
 
+In order to estimate body temperature over a raster (matrix) of temperatures we need to define a modified version of `predictFishRMR::bodyTempLambert`.
+
 ```{r}
+
+bodyTempLambertRaster <-
+function(x, m, k = NULL, kpars = NULL,meso, pars){
+  
+  # calculate the cooling rate k from allometric relationship with mass if not
+  # provided. The coefficients used to estimate k from kfum() can be 
+  # set using values provided to kpars, else the default values are used. 
+  ifelse(is.null(k), 
+               ifelse(is.null(kpars), 
+                      kk <- kfun(m), 
+                      kk <- kfun(m, kpars)), 
+               kk <- k)
+  
+  # extract the parameters to pass onwards
+  gg <- pars[1] # gamma, the intercept
+  aa <- pars[2] # alpha, the coefficient of log10(mass) in RMR
+  bb <- pars[3] # beta, the coefficient of body temperature
+  ifelse(meso, pp <- pars[4],  pp <- 0) # psi, the effect of mesothermy on the intercept
+  # om <- pars[5] # omega, the exponent of the multiplier of mass to convert RMR to T0
+  
+  # use the default package supplied value for omega if omitted
+  # if(is.null(omega)){omega <- omega}
+  om <- predictFishRMR:::omega
+  # aa <- pars[1] # alpha, the coefficient of log10(mass) in RMR
+  # bb <- pars[2] # beta, the coefficient of body temperature
+  # gg <- pars[3] # gamma, the intercept
+  # ifelse(meso, pp <- pars[4],  pp <- 0) # psi, the effect of mesothermy
+  # om <- pars[5] # omega, the exponent of the multiplier of mass to convert RMR to T0
+  # # om <- omega
+  
+  # we only need bracnch 0 from the Lambert function
+  y0 <- x - 
+    (lamW::lambertW0( - ((exp(bb*x+gg+pp)) * (m^(aa-1)) * bb / (om*kk) )) / bb)
+
+
+  # return the data
+  return(y0)
+}
+
+
+```
+
+Genrate the maps of RMR valus derived from water temperatures under different scenarios. 
+
+```{r}
+
+## AJ delete when stan is working on this machine
+pars <- fittedModelRMR$fixef[,1]
 
 # quartz("Fig3", 24,8)
 pdf(file = "Figure-3.pdf", 24, 8)
@@ -531,9 +581,9 @@ meso = F
 world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_min.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta1) <- ifelse(values(world_ta1)>x_max, NA, values(world_ta1) )
-Ta <- world_ta1
-# Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
-Tm <- bodyTempLambert(x = Ta, m = )
+Ta <- Tm <- world_ta1
+values(Tm) <- bodyTempLambertRaster(x = values(Ta), m = m, meso = meso, 
+                              pars = pars, kpars = kpars)
 RMR_values <- RMRfun(m, Tm, meso, pars)
 plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, xaxt = "n", yaxt = "n", ylab = "", xlab = "")
 image((RMR_values), zlim =c(1500, 89469.57), col = magma(50), add = T)
@@ -549,8 +599,9 @@ meso = T
 world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_min.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta1) <- ifelse(values(world_ta1)>x_max, NA, values(world_ta1) )
-Ta <- world_ta1
-Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
+Ta <- Tm <- world_ta1
+values(Tm) <- bodyTempLambertRaster(x = values(Ta), m = m, meso = meso, 
+                              pars = pars, kpars = kpars)
 RMR_values <- RMRfun(m, Tm, meso, pars)
 plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, xaxt = "n", yaxt = "n", ylab = "", xlab = "")
 image((RMR_values), zlim =c(1500, 89469.57), col = magma(50), add = T)
@@ -565,8 +616,9 @@ meso = F
 world_ta2 <- raster("thetao_ssp460_2090_2100_depthsurf_min.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta2) <- ifelse(values(world_ta2)>x_max, NA, values(world_ta2) )
-Ta <- world_ta2
-Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
+Ta <- Tm <- world_ta2
+values(Tm) <- bodyTempLambertRaster(x = values(Ta), m = m, meso = meso, 
+                              pars = pars, kpars = kpars)
 RMR_values <- RMRfun(m, Tm, meso, pars)
 plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, xaxt = "n",yaxt = "n", ylab = "", xlab = "")
 image((RMR_values), zlim = c(1500, 89469.57),col = magma(50), add = T)
@@ -581,8 +633,9 @@ meso = T
 world_ta2 <- raster("thetao_ssp460_2090_2100_depthsurf_min.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta2) <- ifelse(values(world_ta2)>x_max, NA, values(world_ta2) )
-Ta <- world_ta2
-Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
+Ta <- Tm <- world_ta2
+values(Tm) <- bodyTempLambertRaster(x = values(Ta), m = m, meso = meso, 
+                              pars = pars, kpars = kpars)
 RMR_values <- RMRfun(m, Tm, meso, pars)
 plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, xaxt = "n",yaxt = "n", ylab = "", xlab = "")
 image((RMR_values), zlim = c(1500, 89469.57),col = magma(50), add = T)
@@ -597,8 +650,9 @@ meso = F
 world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_max.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta1) <- ifelse(values(world_ta1)>x_max, NA, values(world_ta1) )
-Ta <- world_ta1
-Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
+Ta <- Tm <- world_ta1
+values(Tm) <- bodyTempLambertRaster(x = values(Ta), m = m, meso = meso, 
+                              pars = pars, kpars = kpars)
 RMR_values <- RMRfun(m, Tm, meso, pars)
 plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, xaxt = "n", yaxt = "n", ylab = "", xlab = "")
 image((RMR_values), zlim =c(1500, 89469.57), col = magma(50), add = T)
@@ -613,8 +667,9 @@ meso = T
 world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_max.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta1) <- ifelse(values(world_ta1)>x_max, NA, values(world_ta1) )
-Ta <- world_ta1
-Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
+Ta <- Tm <- world_ta1
+values(Tm) <- bodyTempLambertRaster(x = values(Ta), m = m, meso = meso, 
+                              pars = pars, kpars = kpars)
 RMR_values <- RMRfun(m, Tm, meso, pars)
 plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, yaxt = "n", xaxt = "n", ylab = "", xlab = "")
 image((RMR_values), zlim =c(1500, 89469.57), col = magma(50), add = T)
@@ -628,8 +683,9 @@ meso = F
 world_ta2 <- raster("thetao_ssp585_2090_2100_depthsurf_max.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta2) <- ifelse(values(world_ta2)>x_max, NA, values(world_ta2) )
-Ta <- world_ta2
-Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
+Ta <- Tm <- world_ta2
+values(Tm) <- bodyTempLambertRaster(x = values(Ta), m = m, meso = meso, 
+                              pars = pars, kpars = kpars)
 RMR_values <- RMRfun(m, Tm, meso, pars)
 plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, xaxt = "n",yaxt = "n", ylab = "", xlab = "")
 image((RMR_values), zlim = c(1500, 89469.57),col = magma(50), add = T)
@@ -644,8 +700,9 @@ meso = T
 world_ta2 <- raster("thetao_ssp585_2090_2100_depthsurf_max.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta2) <- ifelse(values(world_ta2)>x_max, NA, values(world_ta2) )
-Ta <- world_ta2
-Tm <- Ta + T0fun(size, Ta, meso, pars) / kfun(size)
+Ta <- Tm <- world_ta2
+values(Tm) <- bodyTempLambertRaster(x = values(Ta), m = m, meso = meso, 
+                              pars = pars, kpars = kpars)
 RMR_values <- RMRfun(m, Tm, meso, pars)
 plot(NA,NA, xlim = c(-160,160), ylim = c(-75,75), las = 1, xaxt = "n",yaxt = "n", ylab = "", xlab = "")
 image((RMR_values), zlim = c(1500, 89469.57),col = magma(50), add = T)
