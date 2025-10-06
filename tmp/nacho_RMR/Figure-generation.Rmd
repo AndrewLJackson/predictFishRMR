@@ -35,8 +35,9 @@ library(MatchIt)
 
 ```{r}
 # --- open data
-rmr_data <- read.csv("MandT_indiv_whalefixed_raw.csv")
+# rmr_data <- read.csv("MandT_indiv_whalefixed_raw.csv")
 #rmr_data <- read.csv("MandT_indiv_whalefixed_raw_CORE.csv")
+rmr_data <- read.csv("RMR_data_final.csv")
 
 tree <- read.tree("fish_shark_combined.tre")
 ```
@@ -171,6 +172,9 @@ set.seed(23); mod <- brm((logRMR)  ~ logM + T + therm # fixed coefficients
   control = list(adapt_delta = 0.99, max_treedepth = 15), # Improve convergence
   save_pars = save_pars(all = TRUE),
   data = rmr_data)
+
+# save the model outputs to file
+save(mod, file = "mod.rda")
 ```
 
 Check model convergence and summarise the output
@@ -193,6 +197,8 @@ pp_check(mod)
 p_map(mod)
 
 pars <- brms::fixef(mod)[,1]
+
+save(pars, file = "pars.rda")
 ```
 
 
@@ -291,7 +297,8 @@ m = size_range = seq(1,2000, length = n)
 pars <- brms::fixef(mod)[,1]
 
 # define our own kpars to use
-kpars <- c(0.00174, -0.63180)
+kpars <- c(0.00174, -0.63180) # exclude
+# kpars <- c(0.00201, -0.6166) # include
 
 
 ## A meso - expected Ta and RMR
@@ -419,7 +426,7 @@ Ta = 20
 meso <- TRUE  # indicating the fish is ectothermic (FALSE)
 elevation_values <- calcElevationTmAboveTa(size_range, Ta, meso, pars, kpars)
 
-plot(size_range, elevation_values, type = "l", col = "black", yaxs = "i", las = 1, xlim = c(0,2000), ylim = c(0,7), xaxs = "i", ylab = "", xaxt = "n", xlab = "", lwd = 1.5)
+plot(size_range, elevation_values, type = "l", col = "black", yaxs = "i", las = 1, xlim = c(0,2000), ylim = c(0,15), xaxs = "i", ylab = "", xaxt = "n", xlab = "", lwd = 1.5)
 axis(1, at = c(1,500,1000,2000), labels = c("1 Kg", "500 Kg", "1Ton", "2 Ton"))
 
 meso <- F  # indicating the fish is ectothermic (FALSE)
@@ -430,7 +437,7 @@ mtext(side = 2, line = 3, expression("Elevation of T"["m"]*" above T"["a"]*" ("*
 
 # Panel C 
 # Initialize a vector to store the Ta values
-Tm <- seq(1, 50, by = 0.5)
+Tm <- seq(0, 50, by = 0.5)
 Ta <- numeric(length(Tm))
 m = seq(1,2000, length = 2500)
 
@@ -443,7 +450,10 @@ for(i in 1:length(m)) {
   lines(Tm, Tafun(m[i], Tm, meso, pars), col = col[i])
 }
 abline(0,1, lty = 2)
-mtext(side = 2, expression("Heat balanced T"["a"]*" ("*degree*" C)") , line = 3)
+mtext(
+  side = 2, line = 3,
+  expression("Heat balanced " * italic(T)["a"] * " (" * degree * "C)")
+)
 box()
 
 polygon(c(c(19,50), c(39,22.5)), c(c(9.5,36), c(-100, -100)), col = "white", border = F)
@@ -454,8 +464,13 @@ plot(1,1, xlim = c(0,2000), ylim = c(0,45), type = "n", axes = F, xlab = "", yla
 
 axis(1, at = c(1, 500, 1000, 2000), labels = c("1Kg", "500", "1Ton", "2 Ton"), cex.axis = 1)
 axis(2, at = c(0,10,20,30,40,60), las = 1)
-mtext(side = 2, expression("T"["a crit"]*" ("*degree*"C)"), line = 2.2, cex = 0.8)
-mtext(side = 1, "Mass", line = 2.2, cex = 0.8)
+mtext(
+  side = 2,
+  expression(italic(T)[thres] ~ "(" * degree * "C" * ")"),
+  line = 2.2,
+  cex = 0.8
+)
+mtext(side = 1, "Body mass", line = 2.2, cex = 0.8)
 
 m_range <- seq(50, 2000, length.out = 2000)
 
@@ -479,22 +494,40 @@ for(i in 1:length(m)) {
   lines(Tm, Tafun(m[i], Tm, meso, pars), col = col[i])
 }
 abline(0,1, lty = 2)
-mtext(side = 1, expression("Body temperature T"["m"]*" ("*degree*" C)"), line = 0, outer = T, adj = 0.4)
+mtext(
+  side = 1, line = 0, outer = TRUE, adj = 0.4,
+  expression("Body temperature " * italic(T)["m"] * " (" * degree * "C)")
+)
 
 polygon(c(c(19,50), c(39,22.5)), c(c(9.5,33), c(-100, -100)), col = "white", border = F)
 box()
+mtext(
+  side = 2, line = 3,
+  expression("Heat balanced " * italic(T)["a"] * " (" * degree * "C)")
+)
+
 
 par(new = T, mar = c(18,4,4,12))
 
 plot(1,1, xlim = c(0,2000), ylim = c(0,45), type = "n", axes = F, xlab = "", ylab = "")
 axis(1, at = c(1, 500, 1000, 2000), labels = c("1 Kg", "500 Kg", "1Ton", "2 Ton"), cex.axis = 1)
 axis(2, at = c(0,10,20,30,40,60), las = 1)
-mtext(side = 2, expression(italic("T"["a crit"]*" ("*degree*"C)")), line = 2.2, cex = 0.8)
+mtext(
+  side = 2,
+  expression(italic(T)[thres] ~ "(" * degree * "C" * ")"),
+  line = 2.2,
+  cex = 0.8
+)
 mtext(side = 1, "Body mass", line = 2.2, cex = 0.8)
 
 m_range <- seq(50, 2000, length.out = 2000)
 
-lines(dd_crit[dd_crit$type == "meso",]$mass, dd_crit[dd_crit$type == "meso",]$Ta_crit, lwd = 1.5, cex = 0.8, col = "black")
+dd_crit_meso <- dd_crit[dd_crit$type == "meso",]
+n <- nrow(dd_crit_meso)
+idx <- round(seq(1, n, length.out = 15))
+dd_subset <- dd_crit_meso[idx, ]
+
+lines(dd_subset[dd_subset$type == "meso",]$mass, dd_subset[dd_subset$type == "meso",]$Ta_crit, lwd = 1.5, cex = 0.8, col = "black", lty = 2)
 
 par(mar = c(5,1,5,6))
 
@@ -567,7 +600,7 @@ Genrate the maps of RMR valus derived from water temperatures under different sc
 ```{r}
 
 ## AJ delete when stan is working on this machine
-pars <- fittedModelRMR$fixef[,1]
+# pars <- fittedModelRMR$fixef[,1]
 
 # quartz("Fig3", 24,8)
 pdf(file = "Figure-3.pdf", 24, 8)
@@ -576,9 +609,10 @@ layout(matrix(c(1,2,0,0,3,4,0,0,5,6,0,0,7,8,9,9),2), widths = c(1, 0.08,1, 0.15,
 par(oma = c(4,6,5,0), mar = c(2,0,1,0), cex.axis = 2)
 
 # panel A
-size <- m <- 1000
+size <- m <- 2000
 meso = F
-world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_min.nc")
+# world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_min.nc")
+world_ta1 <- raster("today_min.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta1) <- ifelse(values(world_ta1)>x_max, NA, values(world_ta1) )
 Ta <- Tm <- world_ta1
@@ -594,9 +628,10 @@ axis(1, labels = F)
 box()
 
 # panel B
-size <- m <- 300
+size <- m <- 500
 meso = T
-world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_min.nc")
+# world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_min.nc")
+world_ta1 <- raster("today_min.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta1) <- ifelse(values(world_ta1)>x_max, NA, values(world_ta1) )
 Ta <- Tm <- world_ta1
@@ -611,9 +646,10 @@ axis(1, labels = T)
 box()
 
 # panel C
-size <- m <- 1000
+size <- m <- 2000
 meso = F
-world_ta2 <- raster("thetao_ssp460_2090_2100_depthsurf_min.nc")
+# world_ta2 <- raster("thetao_ssp460_2090_2100_depthsurf_min.nc")
+world_ta2 <- raster("future_min.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta2) <- ifelse(values(world_ta2)>x_max, NA, values(world_ta2) )
 Ta <- Tm <- world_ta2
@@ -628,9 +664,10 @@ axis(1, labels = F)
 axis(2, labels = F)
 
 # panel D
-size <- m <- 300
+size <- m <- 500
 meso = T
-world_ta2 <- raster("thetao_ssp460_2090_2100_depthsurf_min.nc")
+# world_ta2 <- raster("thetao_ssp460_2090_2100_depthsurf_min.nc")
+world_ta2 <- raster("future_min.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta2) <- ifelse(values(world_ta2)>x_max, NA, values(world_ta2) )
 Ta <- Tm <- world_ta2
@@ -645,9 +682,10 @@ axis(2, labels = F)
 mtext("Winter", line = 2, outer = T, adj = 0.21, cex = 2)
 
 # panel E
-size <- m <- 1000
+size <- m <- 2000
 meso = F
-world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_max.nc")
+# world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_max.nc")
+world_ta1 <- raster("today_max.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta1) <- ifelse(values(world_ta1)>x_max, NA, values(world_ta1) )
 Ta <- Tm <- world_ta1
@@ -662,9 +700,10 @@ axis(1, labels = F)
 axis(2, labels = F)
 
 # panel F
-size <- m <- 300
+size <- m <- 500
 meso = T
-world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_max.nc")
+# world_ta1 <- raster("thetao_baseline_2010_2019_depthsurf_max.nc")
+world_ta1 <- raster("today_max.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta1) <- ifelse(values(world_ta1)>x_max, NA, values(world_ta1) )
 Ta <- Tm <- world_ta1
@@ -678,9 +717,10 @@ axis(1)
 axis(2, labels = F)
 
 # panel G
-size <- m <- 1000
+size <- m <- 2000
 meso = F
-world_ta2 <- raster("thetao_ssp585_2090_2100_depthsurf_max.nc")
+# world_ta2 <- raster("thetao_ssp585_2090_2100_depthsurf_max.nc")
+world_ta2 <- raster("future_max.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta2) <- ifelse(values(world_ta2)>x_max, NA, values(world_ta2) )
 Ta <- Tm <- world_ta2
@@ -695,9 +735,10 @@ axis(1, labels = F)
 axis(2, labels = F)
 
 # panel H
-size <- m <- 300
+size <- m <- 500
 meso = T
-world_ta2 <- raster("thetao_ssp585_2090_2100_depthsurf_max.nc")
+# world_ta2 <- raster("thetao_ssp585_2090_2100_depthsurf_max.nc")
+world_ta2 <- raster("future_max.nc")
 x_max <- maxAmbientTemp(m, meso, pars)
 values(world_ta2) <- ifelse(values(world_ta2)>x_max, NA, values(world_ta2) )
 Ta <- Tm <- world_ta2
@@ -730,7 +771,7 @@ Test old and new method
 
 ```{r}
 meso = FALSE
-m <- 1000
+m <- 2000
 Ta <- seq(5, 25)
 
 Tm_old <- Ta + T0fun(m, Ta, meso, pars) / kfun(size)
