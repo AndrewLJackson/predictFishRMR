@@ -742,6 +742,9 @@ Tm_new <- bodyTempLambert(x = Ta, m = size, meso = meso,
 RMR_new <- RMRfun(m, as.numeric(Tm_new$y), meso, pars)
 
 
+plot(RMR_old ~ RMR_new, type = "l", main = paste0("mass = ", m))
+abline(0,1, col = "red", lty = 2)
+
 ```
 
 
