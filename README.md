@@ -24,14 +24,14 @@ or you can install a particular version such as the latest stable release
 
 ``` r
 # install.packages("pak")
-pak::pak("AndrewLJackson/predictFishRMR@v1.0.1", build_vignettes = TRUE)
+pak::pak("AndrewLJackson/predictFishRMR@v1.0.2", build_vignettes = TRUE)
 ```
 
 of via devtools
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("AndrewLJackson/predictFishRMR@v1.0.1", build_vignettes = TRUE)
+devtools::install_github("AndrewLJackson/predictFishRMR@v1.0.2", build_vignettes = TRUE)
 ```
 
 
@@ -50,14 +50,4 @@ devtools::install(build_vignettes = TRUE)
 + The file `vignettes/predict-Ta-crit-sensitivity.Rmd` generates some figures that we discussed adding to the paper including a sensitivity analysis of how the estimated Ta that permits thermal equilibrium varies with mass and thermal strategy for double and half K estimates.`vignette("predict-Ta-crit-sensitivity", package = "predictFishRMR")`
 + The file `vignettes/worked-example.Rmd` illustrates how you can calculate RMR for a fish of given size and thermal strategy at a range of water temperatures. `vignette("worked-example", package = "predictFishRMR")`
 
-
-
-## Example
-
-This is a basic example which shows you how to solve a common problem: to be implemented. 
-
-``` r
-library(predictFishRMR)
-## basic example code TBC
-```
 
