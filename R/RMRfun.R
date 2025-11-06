@@ -8,7 +8,7 @@
 #'   corresponding fitted linear regression
 #'
 #' @returns a vector the same length as input m containing the corresponding
-#'   estimates of resting metabolic rate RMR
+#'   estimates of routine metabolic rate RMR
 #' @export
 #' 
 RMRfun <-

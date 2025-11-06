@@ -24,7 +24,7 @@ library(tidyverse)
 
 ## Introduction
 
-Here we use the functions in the package `predictFishRMR` to predict various features of a fishe's metabolism and ecological constraints based on their mass and physiology type. 
+Here we use the functions in the package `predictFishRMR` to predict various features of a fish's metabolism and ecological constraints based on their mass and physiology type. 
 
 For this example we pick a mesotherm fish with mass = 2000g.
 
@@ -40,14 +40,14 @@ Ta <- seq(0,30, by = 0.25)
 mesotherm <- TRUE
 
 # define our own kpars to use
-kpars <- c(0.00174, -0.63180)
+kpars <- c(0.00174, -0.6318)
 
 # Estimate the cooling coefficient K
 # K <- kfun(m = mm)
 
 # load the fitted regression model and extract the parameters
 data("fittedModelRMR")
-pars <- fittedModelRMR$fixef
+pars <- fittedModelRMR
 
 # loop over the sequence of water temperatures in the vector Ta
 # Estimate the body temperature at thermal equilibrium and take only the 

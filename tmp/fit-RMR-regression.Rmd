@@ -41,7 +41,7 @@ set.seed(101)
 The raw species and tree datasets have to be tidied somewhat to ensure data types are correct and species character strings match exactly. 
 
 
-### Resting metabolic dataset 
+### Routine metabolic dataset 
 
 Load the raw RMR dataset.  
 
@@ -179,7 +179,9 @@ priors = c(
 )
 
 # run Bayesian model including phylogenetic tree
-set.seed(23); mod <- brm((logRMR)  ~ logM + T + therm # fixed coefficients
+set.seed(23)
+
+fittedModelRMR <- brm((logRMR)  ~ logM + T + therm # fixed coefficients
   + (1 | gr(spp, cov = A)) + (1| spp_name), # random factors
   family = gaussian(), 
   data2 = list(A = A),

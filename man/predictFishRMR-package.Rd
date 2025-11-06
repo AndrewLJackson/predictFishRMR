@@ -4,8 +4,8 @@
 \name{predictFishRMR-package}
 \alias{predictFishRMR}
 \alias{predictFishRMR-package}
-\title{predictFishRMR: Estimates the resting metabolic rates of fish based on allometric scaling equations and water temperatures}
+\title{predictFishRMR: Estimates the routine metabolic rates of fish based on allometric scaling equations and water temperatures}
 \description{
-Observed relationships between body mass and cooling coefficients, coupled with a seperate relationship between body mass and temperature elevations above ambient water temperature are used to provide predictions of resting metabolic rates of fish using only body mass and whether they are mesotherms (or regional endotherms) or ectotherms. Additional functions are provided to estimate predicted maximum ambient water temperature that permits thermal equilibrium.
+Observed relationships between body mass and cooling coefficients, coupled with a seperate relationship between body mass and temperature elevations above ambient water temperature are used to provide predictions of routine metabolic rates of fish using only body mass and whether they are mesotherms (or regional endotherms) or ectotherms. Additional functions are provided to estimate predicted maximum ambient water temperature that permits thermal equilibrium.
 }
 \keyword{internal}

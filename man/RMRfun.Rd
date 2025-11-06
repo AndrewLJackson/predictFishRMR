@@ -19,7 +19,7 @@ corresponding fitted linear regression}
 }
 \value{
 a vector the same length as input m containing the corresponding
-  estimates of resting metabolic rate RMR
+  estimates of routine metabolic rate RMR
 }
 \description{
 Calculate RMR for a fish of given mass, body temperature and thermal strategy
