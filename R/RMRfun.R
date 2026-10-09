@@ -1,6 +1,6 @@
 #' Calculate RMR for a fish of given mass, body temperature and thermal strategy
 #'
-#' @param m body mass in g, typically provided as a vector but could be scalar.
+#' @param m body mass in kg, typically provided as a vector but could be scalar.
 #' @param Tm body temperature in C
 #' @param meso a logical value where TRUE indicates mesotherm and FALSE
 #'   indicates ectotherm

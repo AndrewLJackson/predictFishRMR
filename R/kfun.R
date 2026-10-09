@@ -1,6 +1,6 @@
 #' Estimate k from Nakamura's exponential scaling
 #'
-#' @param m body mass of the fish in g
+#' @param m body mass of the fish in kg
 #' @param kpars a vector contain "a" the prefactor of the exponential scaling
 #'   equation and "b" the scaling exponent
 #'

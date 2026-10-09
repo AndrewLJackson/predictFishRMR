@@ -31,7 +31,7 @@ In this example we explore how our estimate of critical ambient temperature, abo
 
 ```{r}
 
-# generate a sequence of mass for the x-axis of the plots
+# generate a sequence of mass in kg for the x-axis of the plots
 m_range <- seq(100, 2500, length.out = 100)
 
 # load and retrieve the parameters for the RMR regression

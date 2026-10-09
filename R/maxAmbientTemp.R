@@ -1,6 +1,6 @@
 #' Calculate the maximum value of water temperature that yields real numbers
 #'
-#' @param m body mass of the fish in g
+#' @param m body mass of the fish in kg
 #' @param meso a switch parameter that is either TRUE for mesotherm (or regional
 #'   endotherm) or FALSE for ectotherm
 #' @param pars the coefficients of the fitted regression model

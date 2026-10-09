@@ -26,11 +26,11 @@ library(tidyverse)
 
 Here we use the functions in the package `predictFishRMR` to predict various features of a fish's metabolism and ecological constraints based on their mass and physiology type. 
 
-For this example we pick a mesotherm fish with mass = 2000g.
+For this example we pick a mesotherm fish with mass = 2000kg.
 
 ```{r}
 
-# mass of fish
+# mass of fish in kg
 mm <- 2000
 
 # range of water temperatures in C

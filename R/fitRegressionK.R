@@ -4,7 +4,7 @@
 #' species as random factor
 #'
 #' @param dd a data.frame or tibble object comprising three columns: "species", 
-#' "M"(log mass in ) and cooling coefficient "K". 
+#' "M"(log mass in kg) and cooling coefficient "K". 
 #' Defaults to the included dataset Kmass.
 #'
 #' @returns a model object of a log-log regression

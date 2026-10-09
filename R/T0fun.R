@@ -1,6 +1,6 @@
 #' Estimate metabolic heat production T0 using a fitted linear model
 #'
-#' @param m body mass of the fish in g
+#' @param m body mass of the fish in kg
 #' @param Tm body temperature of the fish
 #' @param meso a switch parameter that is either TRUE for mesotherm (or regional
 #'   endotherm) or FALSE for ectotherm

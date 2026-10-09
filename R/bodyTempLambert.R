@@ -1,7 +1,7 @@
 #' Solve the model for body temperature as a function of ambient water temp
 #'
 #' @param x ambient water temperature in C
-#' @param m body mass in g
+#' @param m body mass in kg
 #' @param k cooling coefficient k. Defaults to NULL which causes it to be
 #'   estimated from m via allometric scaling kfun()
 #' @param kpars a vector contain "a" the prefactor of the exponential scaling
@@ -18,7 +18,7 @@ bodyTempLambert <-
 function(x, m, k = NULL, kpars = NULL,meso, pars){
   
   # calculate the cooling rate k from allometric relationship with mass if not
-  # provided. The coefficients used to estimate k from kfum() can be 
+  # provided. The coefficients used to estimate k from kfun() can be 
   # set using values provided to kpars, else the default values are used. 
   ifelse(is.null(k), 
                ifelse(is.null(kpars), 

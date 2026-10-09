@@ -1,6 +1,6 @@
 #' Calculates the ambient water temperature associated with heat balance for a given body temperature
 #'
-#' @param m body mass in g
+#' @param m body mass in kg
 #' @param Tm body temperature in C
 #' @param meso a switch parameter that is either TRUE for mesotherm (or regional
 #'   endotherm) or FALSE for ectotherm
