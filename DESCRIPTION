@@ -1,7 +1,7 @@
 Package: predictFishRMR
 Type: Package
 Title: Estimates the routine metabolic rates of fish based on allometric scaling equations and water temperatures
-Version: 1.0.2
+Version: 1.0.3
 Date: 2025-11-06
 Author: Andrew L Jackson
 Maintainer: Andrew Jackson<jacksoan@tcd.ie>
