@@ -7,7 +7,7 @@
 RMRfun(m, Tm, meso, pars)
 }
 \arguments{
-\item{m}{body mass in g, typically provided as a vector but could be scalar.}
+\item{m}{body mass in kg, typically provided as a vector but could be scalar.}
 
 \item{Tm}{body temperature in C}
 

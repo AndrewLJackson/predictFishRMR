@@ -7,7 +7,7 @@
 T0fun(m, Tm, meso, pars)
 }
 \arguments{
-\item{m}{body mass of the fish in g}
+\item{m}{body mass of the fish in kg}
 
 \item{Tm}{body temperature of the fish}
 

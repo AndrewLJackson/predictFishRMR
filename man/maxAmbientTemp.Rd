@@ -7,7 +7,7 @@
 maxAmbientTemp(m, meso, pars, preK = 1, kpars = NULL)
 }
 \arguments{
-\item{m}{body mass of the fish in g}
+\item{m}{body mass of the fish in kg}
 
 \item{meso}{a switch parameter that is either TRUE for mesotherm (or regional
 endotherm) or FALSE for ectotherm}

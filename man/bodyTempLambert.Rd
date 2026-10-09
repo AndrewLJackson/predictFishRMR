@@ -9,7 +9,7 @@ bodyTempLambert(x, m, k = NULL, kpars = NULL, meso, pars)
 \arguments{
 \item{x}{ambient water temperature in C}
 
-\item{m}{body mass in g}
+\item{m}{body mass in kg}
 
 \item{k}{cooling coefficient k. Defaults to NULL which causes it to be
 estimated from m via allometric scaling kfun()}

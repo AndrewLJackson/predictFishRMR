@@ -7,7 +7,7 @@
 Tafun(m, Tm, meso, pars, kpars = NULL)
 }
 \arguments{
-\item{m}{body mass in g}
+\item{m}{body mass in kg}
 
 \item{Tm}{body temperature in C}
 

@@ -8,7 +8,7 @@
 An object of class `"data.frame"` containing three variables. 
 The first column is a character vector of species names labelled "species". 
 The second is labelled "M" is a numeric vector of body mass values in
-log10(tons). The third is labelled "K" represents cooling coefficients.
+log10(kg). The third is labelled "K" represents cooling coefficients.
 }
 \usage{
 data(Kmass)

@@ -8,7 +8,7 @@ fitRegressionK(dd = NULL)
 }
 \arguments{
 \item{dd}{a data.frame or tibble object comprising three columns: "species", 
-"M"(log mass in ) and cooling coefficient "K". 
+"M"(log mass in kg) and cooling coefficient "K". 
 Defaults to the included dataset Kmass.}
 }
 \value{

@@ -7,7 +7,7 @@
 kfun(m, kpars = c(a = 0.00173, b = -0.633))
 }
 \arguments{
-\item{m}{body mass of the fish in g}
+\item{m}{body mass of the fish in kg}
 
 \item{kpars}{a vector contain "a" the prefactor of the exponential scaling
 equation and "b" the scaling exponent}
