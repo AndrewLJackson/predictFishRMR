@@ -24,21 +24,21 @@ or you can install a particular version such as the latest stable release
 
 ``` r
 # install.packages("pak")
-pak::pak("AndrewLJackson/predictFishRMR@v1.0.2", build_vignettes = TRUE)
+pak::pak("AndrewLJackson/predictFishRMR@v1.0.3", build_vignettes = TRUE)
 ```
 
 of via devtools
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("AndrewLJackson/predictFishRMR@v1.0.2", build_vignettes = TRUE)
+devtools::install_github("AndrewLJackson/predictFishRMR@v1.0.3", build_vignettes = TRUE)
 ```
 
 
 
 ### Alternative installation route
 
-You can install this package easily by cloning the repository to your local computer or downloading the zip file and extracting it to your local working directory. Then open the `predictFishRMR.Rproj` to load Rstudio and point it to this package. Then you can install it along with the vingettes using:
+You can install this package easily by cloning the repository to your local computer or downloading the zip file and extracting it to your local working directory. Then open the `predictFishRMR.Rproj` to load Rstudio and point it to this package. Then you can install it along with the vignettes using:
 
 ``` r
 # install.packages("devtools")
